@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import WaterSafetyHubView from "../views/WaterSafetyHubView.vue";
+import TrustedAlternativesView from "../views/TrustedAlternativesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: "/water-safety-hub",
       name: "water-safety-hub",
       component: WaterSafetyHubView,
+    },
+    {
+      path: "/trusted-alternatives",
+      name: "trusted-alternatives",
+      component: TrustedAlternativesView,
     },
   ],
 });

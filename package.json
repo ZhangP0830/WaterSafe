@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.10",
     "@popperjs/core": "2.11.5",
     "bootstrap": "5.1.3",
     "pinia": "2.0.14",

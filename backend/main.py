@@ -1,0 +1,47 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from api.water_sources import router as water_sources_router
+
+app = FastAPI(title="WaterSafe API", version="1.0.0")
+
+# CORS settings - Support local development and Vercel deployment
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://*.vercel.app",
+        "https://*.vercel.app/*",
+        "https://water-safe.vercel.app",
+        "https://water-safe.vercel.app/*",
+        "https://water-safe-git-main-zhangp0830s-projects.vercel.app",
+        "https://water-safe-git-main-zhangp0830s-projects.vercel.app/*"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add API routes
+app.include_router(water_sources_router)
+
+@app.get("/")
+async def root():
+    return {"message": "WaterSafe API is running!"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+if __name__ == "__main__":
+    import uvicorn
+    import os
+    
+    # Get configuration from environment variables, support local and server deployment
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    
+    print(f"Starting WaterSafe API server on {host}:{port}")
+    print(f"API documentation: http://{host}:{port}/docs")
+    
+    uvicorn.run(app, host=host, port=port)

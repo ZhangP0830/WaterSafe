@@ -170,6 +170,20 @@ watch(
               Water Safety Hub
             </RouterLink>
           </li>
+          <li class="nav-item mx-2">
+            <RouterLink
+              class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+              :class="getTextColor()"
+              :to="{ name: 'trusted-alternatives' }"
+            >
+              <i
+                class="material-icons opacity-6 me-2 text-md"
+                :class="getTextColor()"
+                >map</i
+              >
+              Trusted Alternatives
+            </RouterLink>
+          </li>
         </ul>
       </div>
     </div>
