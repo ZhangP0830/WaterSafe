@@ -126,7 +126,7 @@ out
 .nuxt
 dist
 .cache/
-public
+# public
 .vuepress/dist
 .serverless/
 .fusebox/

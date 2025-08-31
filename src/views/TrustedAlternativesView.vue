@@ -209,8 +209,9 @@ const infoWindow = ref(null);
 const loading = ref(false);
 const error = ref(null);
 
-// API base URL
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8000';
+// API base URL - Auto-detect environment
+const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 
+  (import.meta.env.DEV ? 'http://localhost:8000' : '/api');
 
 // Get all water source data
 const fetchWaterSources = async () => {
@@ -218,7 +219,7 @@ const fetchWaterSources = async () => {
   error.value = null;
   
   try {
-    const response = await fetch(`${API_BASE_URL}/api/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
