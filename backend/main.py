@@ -12,8 +12,8 @@ app.add_middleware(
         "http://localhost:5173",
         "https://*.vercel.app",
         "https://*.vercel.app/*",
-        "https://water-safe.vercel.app",
-        "https://water-safe.vercel.app/*",
+        "https://water-safety.vercel.app",
+        "https://water-safety.vercel.app/*",
         "https://water-safe-git-main-zhangp0830s-projects.vercel.app",
         "https://water-safe-git-main-zhangp0830s-projects.vercel.app/*"
     ],
