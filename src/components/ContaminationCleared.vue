@@ -3,13 +3,10 @@ import { ref, computed } from "vue";
 
 // 任务数据
 const tasks = ref([
-  { id: 1, text: "Stop ALL consumption of tap water immediately", time: "Right now", tag: "URGENT", completed: false },
-  { id: 2, text: "Alert family, guests, and pets", time: "Right now", tag: "URGENT", completed: false },
-  { id: 3, text: "Inventory all bottled water in home", time: "Next 10 minutes", tag: "URGENT", completed: false },
-  { id: 4, text: "Emergency shopping trip for bottled water", time: "Within 30 minutes", tag: "URGENT", completed: false },
-  { id: 5, text: "Contact elderly/pregnant family members", time: "Within 1 hour", tag: "SOON", completed: false },
-  { id: 6, text: "Arrange water delivery if needed", time: "Within 2 hours", tag: "SOON", completed: false },
-  { id: 7, text: "Locate community water distribution points", time: "As needed", tag: "WHEN POSSIBLE", completed: false }
+  { id: 1, text: "Run all taps for several minutes to flush pipes", time: "Within 1 hour — Safe", tag: "SAFE", completed: false },
+  { id: 2, text: "Wash and disinfect bottles, utensils, and storage containers", time: "Within 2 hours — Safe", tag: "SAFE", completed: false },
+  { id: 3, text: "Discard any stored water older than 48 hours", time: "Within 24 hours — Safe", tag: "SAFE", completed: false },
+  { id: 4, text: "Inform family and caregivers it's safe to use tap water again", time: "Within 24 hours — Safe", tag: "SAFE", completed: false }
 ]);
 
 // 计算进度
@@ -48,26 +45,26 @@ const completeAll = () => {
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-danger me-2">block</i>
-            Do Not Drink Advisory
+            <i class="material-icons text-success me-2">check_circle</i>
+            Contamination Cleared
           </h3>
-          <p class="text-muted mb-2">Serious contamination. Water is unsafe even when boiled.</p>
+          <p class="text-muted mb-2">Water has tested safe, but pipes and containers may still hold residue.</p>
           <div class="d-flex align-items-center text-muted">
             <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Until further notice</small>
+            <small>Safe to resume normal use</small>
           </div>
         </div>
         <div class="text-end">
-          <div class="h4 mb-0 text-danger">{{ progress.percentage }}%</div>
+          <div class="h4 mb-0 text-success">{{ progress.percentage }}%</div>
           <small class="text-muted">{{ progress.count }}/{{ progress.total }} complete</small>
         </div>
       </div>
       
-      <!-- 警告框 -->
-      <div class="alert alert-danger d-flex align-items-start mb-4">
-        <i class="material-icons me-2 mt-1">warning</i>
+      <!-- 安全提示框 -->
+      <div class="alert alert-success d-flex align-items-start mb-4">
+        <i class="material-icons me-2 mt-1">check_circle</i>
         <div>
-          <strong>Critical:</strong> Do NOT boil this water. Boiling will NOT make it safe. Use only bottled water for all needs.
+          <strong>Safe:</strong> Tap water is now usable, but clean your home system to remove risks.
         </div>
       </div>
       
@@ -84,7 +81,7 @@ const completeAll = () => {
             <input 
               class="form-check-input" 
               type="checkbox" 
-              :id="'do-not-drink-task-' + task.id"
+              :id="'task-' + task.id"
               :checked="task.completed"
               @click.stop
             >
@@ -104,6 +101,7 @@ const completeAll = () => {
               <span 
                 class="badge"
                 :class="{
+                  'bg-success': task.tag === 'SAFE',
                   'bg-danger': task.tag === 'URGENT',
                   'bg-warning': task.tag === 'SOON',
                   'bg-info': task.tag === 'WHEN POSSIBLE'
@@ -125,7 +123,7 @@ const completeAll = () => {
           <button @click="resetAll" class="btn btn-outline-secondary btn-sm">
             Reset
           </button>
-          <button @click="completeAll" class="btn btn-danger btn-sm">
+          <button @click="completeAll" class="btn btn-success btn-sm">
             Complete All
           </button>
         </div>
@@ -149,8 +147,8 @@ const completeAll = () => {
 }
 
 .form-check-input:checked {
-  background-color: #dc3545;
-  border-color: #dc3545;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
 }
 
 .badge {
@@ -169,5 +167,3 @@ const completeAll = () => {
   }
 }
 </style>
-
-

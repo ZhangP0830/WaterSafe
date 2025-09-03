@@ -1,19 +1,21 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import BoilWaterAdvisory from "./BoilWaterAdvisory.vue";
-import DoNotDrinkAdvisory from "./DoNotDrinkAdvisory.vue";
-import LowWaterPressure from "./LowWaterPressure.vue";
-import AdvisoryLifted from "./AdvisoryLifted.vue";
+import ConfirmedContamination from "./ConfirmedContamination.vue";
+import SevereContamination from "./SevereContamination.vue";
+import ContaminationCleared from "./ContaminationCleared.vue";
+import EarlySignsOfContamination from "./EarlySignsOfContamination.vue";
 
 // nav-pill
 import setNavPills from "@/assets/js/nav-pills.js";
 
 // 当前激活的tab
-const activeTab = ref('boil-water');
+const activeTab = ref('early-signs');
 
 // 切换tab
 const switchTab = (tabName) => {
+  console.log('Switching to tab:', tabName);
   activeTab.value = tabName;
+  console.log('Active tab is now:', activeTab.value);
 };
 
 onMounted(() => {
@@ -30,75 +32,76 @@ onMounted(() => {
               <li class="nav-item">
                 <a
                   class="nav-link mb-0 px-2 py-2"
-                  :class="{ active: activeTab === 'boil-water' }"
+                  :class="{ active: activeTab === 'early-signs' }"
                   href="#"
-                  @click.prevent="switchTab('boil-water')"
+                  @click.prevent="switchTab('early-signs')"
                   role="tab"
-                  :aria-selected="activeTab === 'boil-water'"
+                  :aria-selected="activeTab === 'early-signs'"
                 >
-                  Boil Water Advisory
+                  Early Signs of Contamination
                 </a>
               </li>
               <li class="nav-item">
                 <a
                   class="nav-link mb-0 px-2 py-2"
-                  :class="{ active: activeTab === 'do-not-drink' }"
+                  :class="{ active: activeTab === 'confirmed-contamination' }"
                   href="#"
-                  @click.prevent="switchTab('do-not-drink')"
+                  @click.prevent="switchTab('confirmed-contamination')"
                   role="tab"
-                  :aria-selected="activeTab === 'do-not-drink'"
+                  :aria-selected="activeTab === 'confirmed-contamination'"
                 >
-                  Do Not Drink
+                  Confirmed Contamination
                 </a>
               </li>
               <li class="nav-item">
                 <a
                   class="nav-link mb-0 px-2 py-2"
-                  :class="{ active: activeTab === 'low-pressure' }"
+                  :class="{ active: activeTab === 'severe-contamination' }"
                   href="#"
-                  @click.prevent="switchTab('low-pressure')"
+                  @click.prevent="switchTab('severe-contamination')"
                   role="tab"
-                  :aria-selected="activeTab === 'low-pressure'"
+                  :aria-selected="activeTab === 'severe-contamination'"
                 >
-                  Low Pressure
+                  Severe Contamination
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link mb-0 px-2 py-2"
+                  :class="{ active: activeTab === 'contamination-cleared' }"
+                  href="#"
+                  @click.prevent="switchTab('contamination-cleared')"
+                  role="tab"
+                  :aria-selected="activeTab === 'contamination-cleared'"
+                >
+                  Contamination Cleared
                 </a>
               </li>
 
-              <li class="nav-item">
-                <a
-                  class="nav-link mb-0 px-2 py-2"
-                  :class="{ active: activeTab === 'advisory-lifted' }"
-                  href="#"
-                  @click.prevent="switchTab('advisory-lifted')"
-                  role="tab"
-                  :aria-selected="activeTab === 'advisory-lifted'"
-                >
-                  Advisory Lifted
-                </a>
-              </li>
+              
             </ul>
           </div>
           
           <!-- 标签内容区域 -->
-          <div class="tab-content mt-4">
-            <!-- Boil Water Advisory Tab -->
-            <div v-if="activeTab === 'boil-water'" class="tab-pane fade show active">
-              <BoilWaterAdvisory />
+          <div class="mt-4">
+            <!-- Early Signs of Contamination Tab -->
+            <div v-if="activeTab === 'early-signs'">
+              <EarlySignsOfContamination />
             </div>
             
-            <!-- Do Not Drink Advisory Tab -->
-            <div v-if="activeTab === 'do-not-drink'" class="tab-pane fade show active">
-              <DoNotDrinkAdvisory />
+            <!-- Confirmed Contamination Tab -->
+            <div v-if="activeTab === 'confirmed-contamination'">
+              <ConfirmedContamination />
             </div>
             
-            <!-- Low Pressure Tab -->
-            <div v-if="activeTab === 'low-pressure'" class="tab-pane fade show active">
-              <LowWaterPressure />
+            <!-- Severe Contamination Tab -->
+            <div v-if="activeTab === 'severe-contamination'">
+              <SevereContamination />
             </div>
             
-            <!-- Advisory Lifted Tab -->
-            <div v-if="activeTab === 'advisory-lifted'" class="tab-pane fade show active">
-              <AdvisoryLifted />
+            <!-- Contamination Cleared Tab -->
+            <div v-if="activeTab === 'contamination-cleared'">
+              <ContaminationCleared />
             </div>
           </div>
         </div>

@@ -3,65 +3,19 @@ import { ref, computed } from "vue";
 
 // 任务数据
 const tasks = ref([
-  {
-    id: 1,
-    text: "Flush all taps for 3-5 minutes",
-    timeframe: "Before first use",
-    urgency: "URGENT",
-    urgencyColor: "danger"
-  },
-  {
-    id: 2,
-    text: "Flush hot water heater by running hot water",
-    timeframe: "Before using hot water",
-    urgency: "URGENT",
-    urgencyColor: "danger"
-  },
-  {
-    id: 3,
-    text: "Discard all ice made during advisory",
-    timeframe: "Right now",
-    urgency: "URGENT",
-    urgencyColor: "danger"
-  },
-  {
-    id: 4,
-    text: "Clean water-using appliances (coffee maker, etc.)",
-    timeframe: "Before next use",
-    urgency: "SOON",
-    urgencyColor: "warning"
-  },
-  {
-    id: 5,
-    text: "Replace any water filters used during advisory",
-    timeframe: "Within 24 hours",
-    urgency: "SOON",
-    urgencyColor: "warning"
-  },
-  {
-    id: 6,
-    text: "Gradually transition from bottled to tap water",
-    timeframe: "Over 1-2 days",
-    urgency: "WHEN POSSIBLE",
-    urgencyColor: "info"
-  },
-  {
-    id: 7,
-    text: "Restock emergency water supply",
-    timeframe: "When convenient",
-    urgency: "WHEN POSSIBLE",
-    urgencyColor: "info"
-  }
+  { id: 1, text: "Immediately stop all drinking and cooking with tap water", time: "Right now — Urgent", tag: "URGENT", completed: false },
+  { id: 2, text: "Switch infant and pregnancy use to bottled or emergency water", time: "Right now — Urgent", tag: "URGENT", completed: false },
+  { id: 3, text: "Use tap water only for toilet flushing, not for dishes or infant contact", time: "Within 30 minutes — Soon", tag: "SOON", completed: false },
+  { id: 4, text: "Collect bottled water or go to designated supply points", time: "Within 2 hours — Soon", tag: "SOON", completed: false }
 ]);
 
 // 计算进度
 const progress = computed(() => {
   const completed = tasks.value.filter(task => task.completed).length;
-  const total = tasks.value.length;
   return {
-    percentage: Math.round((completed / total) * 100),
-    completed,
-    total
+    count: completed,
+    total: tasks.value.length,
+    percentage: Math.round((completed / tasks.value.length) * 100)
   };
 });
 
@@ -75,16 +29,12 @@ const toggleTask = (taskId) => {
 
 // 重置所有任务
 const resetAll = () => {
-  tasks.value.forEach(task => {
-    task.completed = false;
-  });
+  tasks.value.forEach(task => task.completed = false);
 };
 
 // 完成所有任务
 const completeAll = () => {
-  tasks.value.forEach(task => {
-    task.completed = true;
-  });
+  tasks.value.forEach(task => task.completed = true);
 };
 </script>
 
@@ -95,26 +45,26 @@ const completeAll = () => {
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-success me-2">check_circle</i>
-            Advisory Lifted
+            <i class="material-icons text-danger me-2">block</i>
+            Severe Contamination
           </h3>
-          <p class="text-muted mb-2">Water is now safe, but take precautions before returning to normal use.</p>
+          <p class="text-muted mb-2">Chemical or toxic contamination present. Boiling is not effective.</p>
           <div class="d-flex align-items-center text-muted">
             <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Transition period: 1-2 days</small>
+            <small>Until further notice</small>
           </div>
         </div>
         <div class="text-end">
-          <div class="h4 mb-0 text-success">{{ progress.percentage }}%</div>
-          <small class="text-muted">{{ progress.completed }}/{{ progress.total }} complete</small>
+          <div class="h4 mb-0 text-danger">{{ progress.percentage }}%</div>
+          <small class="text-muted">{{ progress.count }}/{{ progress.total }} complete</small>
         </div>
       </div>
       
       <!-- 警告框 -->
-      <div class="alert alert-light border d-flex align-items-start mb-4">
-        <i class="material-icons text-light me-2 mt-1">warning</i>
-        <div class="text-dark">
-          Even though the advisory is lifted, flush your system thoroughly before returning to normal use.
+      <div class="alert alert-warning d-flex align-items-start mb-4">
+        <i class="material-icons me-2 mt-1">warning</i>
+        <div>
+          <strong>Important:</strong> Tap water is unsafe for all consumption. Use bottled or emergency supply only.
         </div>
       </div>
       
@@ -131,7 +81,7 @@ const completeAll = () => {
             <input 
               class="form-check-input" 
               type="checkbox" 
-              :id="'advisory-lifted-task-' + task.id"
+              :id="'do-not-drink-task-' + task.id"
               :checked="task.completed"
               @click.stop
             >
@@ -146,17 +96,17 @@ const completeAll = () => {
             <div class="d-flex align-items-center">
               <small class="text-muted me-2">
                 <i class="material-icons me-1" style="font-size: 0.875rem;">schedule</i>
-                {{ task.timeframe }}
+                {{ task.time }}
               </small>
               <span 
                 class="badge"
                 :class="{
-                  'bg-danger': task.urgency === 'URGENT',
-                  'bg-warning': task.urgency === 'SOON',
-                  'bg-info': task.urgency === 'WHEN POSSIBLE'
+                  'bg-danger': task.tag === 'URGENT',
+                  'bg-warning': task.tag === 'SOON',
+                  'bg-info': task.tag === 'WHEN POSSIBLE'
                 }"
               >
-                {{ task.urgency }}
+                {{ task.tag }}
               </span>
             </div>
           </div>
@@ -166,13 +116,13 @@ const completeAll = () => {
       <!-- 底部操作区域 -->
       <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
         <div class="text-muted">
-          Progress: {{ progress.completed }}/{{ progress.total }} tasks
+          Progress: {{ progress.count }}/{{ progress.total }} tasks
         </div>
         <div class="btn-group">
           <button @click="resetAll" class="btn btn-outline-secondary btn-sm">
             Reset
           </button>
-          <button @click="completeAll" class="btn btn-success btn-sm">
+          <button @click="completeAll" class="btn btn-danger btn-sm">
             Complete All
           </button>
         </div>
@@ -196,8 +146,8 @@ const completeAll = () => {
 }
 
 .form-check-input:checked {
-  background-color: #198754;
-  border-color: #198754;
+  background-color: #dc3545;
+  border-color: #dc3545;
 }
 
 .badge {
@@ -216,3 +166,5 @@ const completeAll = () => {
   }
 }
 </style>
+
+

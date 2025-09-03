@@ -120,7 +120,7 @@ watch(
         title="WaterSafe"
         data-placement="bottom"
       >
-        WaterSafe
+        WaterSafety
       </RouterLink>
       <RouterLink
         class="navbar-brand d-block d-md-none"
@@ -134,7 +134,7 @@ watch(
         title="WaterSafe"
         data-placement="bottom"
       >
-        WaterSafe
+        WaterSafety
       </RouterLink>
       <button
         class="navbar-toggler shadow-none ms-2"
