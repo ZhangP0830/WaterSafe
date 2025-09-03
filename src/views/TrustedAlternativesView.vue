@@ -280,10 +280,10 @@ const fetchWaterSources = async () => {
   
   try {
     // 生产环境使用（通过 Netlify _redirects 代理）
-    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     
     // 本地开发使用（直接访问后端 API）
-    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
+    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
