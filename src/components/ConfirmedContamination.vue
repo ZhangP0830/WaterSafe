@@ -1,18 +1,39 @@
 <script setup>
 import { ref, computed } from "vue";
 
-// 任务数据
+// Tasks Data
 const tasks = ref([
-  { id: 1, text: "Check water pressure at multiple taps", time: "Right now", tag: "URGENT", completed: false },
-  { id: 2, text: "Begin water conservation immediately", time: "Right now", tag: "URGENT", completed: false },
-  { id: 3, text: "Fill bathtubs and large containers while available", time: "Next 30 minutes", tag: "URGENT", completed: false },
-  { id: 4, text: "Ask neighbors about their water pressure", time: "Within 1 hour", tag: "SOON", completed: false },
-  { id: 5, text: "Report issue to water utility", time: "Within 1 hour", tag: "SOON", completed: false },
-  { id: 6, text: "Prepare backup water supply", time: "Within 2 hours", tag: "SOON", completed: false },
-  { id: 7, text: "Monitor utility updates regularly", time: "Ongoing", tag: "WHEN POSSIBLE", completed: false }
+  { 
+    id: 1, 
+    text: "Stop using unboiled tap water immediately", 
+    time: "Right now — Urgent", 
+    tag: "URGENT", 
+    completed: false 
+  },
+  { 
+    id: 2, 
+    text: "Inform family members and caregivers about boil rules", 
+    time: "Right now — Urgent", 
+    tag: "URGENT", 
+    completed: false 
+  },
+  { 
+    id: 3, 
+    text: "Boil and cool water for drinking, brushing teeth, cooking, and formula", 
+    time: "Next 30 minutes — Soon", 
+    tag: "SOON", 
+    completed: false 
+  },
+  { 
+    id: 4, 
+    text: "Check bottled water supplies; restock if running low", 
+    time: "Within 2 hours — Soon", 
+    tag: "SOON", 
+    completed: false 
+  }
 ]);
 
-// 计算进度
+// Calculate Progress
 const progress = computed(() => {
   const completed = tasks.value.filter(task => task.completed).length;
   return {
@@ -22,7 +43,7 @@ const progress = computed(() => {
   };
 });
 
-// 切换任务状态
+// Toggle Task Status
 const toggleTask = (taskId) => {
   const task = tasks.value.find(t => t.id === taskId);
   if (task) {
@@ -30,12 +51,12 @@ const toggleTask = (taskId) => {
   }
 };
 
-// 重置所有任务
+// Reset All Tasks
 const resetAll = () => {
   tasks.value.forEach(task => task.completed = false);
 };
 
-// 完成所有任务
+// Complete All Tasks
 const completeAll = () => {
   tasks.value.forEach(task => task.completed = true);
 };
@@ -44,17 +65,17 @@ const completeAll = () => {
 <template>
   <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-      <!-- 标题区域 -->
+      <!-- Title Area-->
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-info me-2">water_drop</i>
-            Low Water Pressure
+            <i class="material-icons text-danger me-2">local_fire_department</i>
+            Confirmed Contamination
           </h3>
-          <p class="text-muted mb-2">Reduced pressure may indicate system compromise.</p>
+          <p class="text-muted mb-2">Microbial contamination present. All water must be boiled before use.</p>
           <div class="d-flex align-items-center text-muted">
             <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Usually 4-24 hours</small>
+            <small>Usually 24-72 hours</small>
           </div>
         </div>
         <div class="text-end">
@@ -63,15 +84,15 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 警告框 -->
-      <div class="alert alert-light border d-flex align-items-start mb-4">
-        <i class="material-icons text-warning me-2 mt-1">warning</i>
-        <div class="text-dark">
-          Low pressure can allow contaminants to enter the system. If pressure drops to zero, treat as boil water advisory when restored.
+      <!-- Warning Alert-->
+      <div class="alert alert-warning d-flex align-items-start mb-4">
+        <i class="material-icons me-2 mt-1">warning</i>
+        <div>
+          <strong>Important:</strong> Boil all water for at least 1 minute and cool before drinking, cooking, or infant use.
         </div>
       </div>
       
-      <!-- 任务列表 -->
+      <!-- Tasks List-->
       <div class="task-list">
         <div 
           v-for="task in tasks" 
@@ -91,7 +112,7 @@ const completeAll = () => {
           </div>
           <div class="flex-grow-1">
             <div 
-              class="form-check-label mb-1"
+              class="form-check-label mb-2"
               :class="{ 'text-decoration-line-through text-muted': task.completed }"
             >
               {{ task.text }}
@@ -125,7 +146,7 @@ const completeAll = () => {
           <button @click="resetAll" class="btn btn-outline-secondary btn-sm">
             Reset
           </button>
-          <button @click="completeAll" class="btn btn-info btn-sm">
+          <button @click="completeAll" class="btn btn-primary btn-sm">
             Complete All
           </button>
         </div>
@@ -149,8 +170,8 @@ const completeAll = () => {
 }
 
 .form-check-input:checked {
-  background-color: #17a2b8;
-  border-color: #17a2b8;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 .badge {

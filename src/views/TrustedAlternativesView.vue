@@ -39,27 +39,14 @@
                   <!-- Search radius selection -->
                   <div class="col-md-6">
                     <label class="form-label">Search Radius</label>
-                    <div class="d-flex align-items-center">
-                      <select v-model="searchRadius" class="form-select me-2" @change="updateMapRadius">
-                        <option value="5">5 km</option>
-                        <option value="10">10 km</option>
-                        <option value="15">15 km</option>
-                        <option value="20">20 km</option>
-                        <option value="50">50 km</option>
-                        <option value="custom">Custom</option>
-                      </select>
-                      <input 
-                        v-if="searchRadius === 'custom'"
-                        v-model="customRadius"
-                        type="number"
-                        min="1"
-                        max="100"
-                        class="form-control"
-                        style="width: 80px;"
-                        placeholder="km"
-                        @input="updateCustomRadius"
-                      />
-                    </div>
+                    <select v-model="searchRadius" class="form-select" @change="updateMapRadius">
+                      <option value="all">All</option>
+                      <option value="5">5 km</option>
+                      <option value="10">10 km</option>
+                      <option value="15">15 km</option>
+                      <option value="20">20 km</option>
+                      <option value="50">50 km</option>
+                    </select>
                   </div>
                   
                   <!-- Status selection -->
@@ -67,10 +54,13 @@
                     <label class="form-label">Status</label>
                     <select v-model="selectedStatus" class="form-select" @change="filterMapMarkers">
                       <option value="">All Status</option>
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                      <option value="maintenance">Maintenance</option>
-                      <option value="temporary">Temporary</option>
+                      <option value="Decommissioned">Decommissioned</option>
+                      <option value="Non-operational">Non-operational</option>
+                      <option value="Operational">Operational</option>
+                      <option value="Operational - partial">Operational - partial</option>
+                      <option value="Operational - proposed to decommission">Operational - proposed to decommission</option>
+                      <option value="Operational - Requires Metered Hydrant">Operational - Requires Metered Hydrant</option>
+                      <option value="Operational (Temporary)">Operational (Temporary)</option>
                     </select>
                   </div>
                 </div>
@@ -89,6 +79,64 @@
             </div>
           </div>
         </div>
+        
+        <!-- Map Legend -->
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-body py-3">
+                <h6 class="mb-3">
+                  <i class="material-icons me-2">legend_toggle</i>
+                  Map Legend - Status Colors
+                </h6>
+                <div class="row">
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #4CAF50; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #4CAF50;"></div>
+                      <small class="text-muted">Operational</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #8BC34A; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #8BC34A;"></div>
+                      <small class="text-muted">Partial</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #FF9800; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #FF9800;"></div>
+                      <small class="text-muted">Proposed Decommission</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #2196F3; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #2196F3;"></div>
+                      <small class="text-muted">Requires Meter</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #9C27B0; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #9C27B0;"></div>
+                      <small class="text-muted">Temporary</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #F44336; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #F44336;"></div>
+                      <small class="text-muted">Non-operational</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-3 mb-2">
+                    <div class="d-flex align-items-center">
+                      <div class="me-2" style="width: 20px; height: 20px; background-color: #9E9E9E; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 2px #9E9E9E;"></div>
+                      <small class="text-muted">Decommissioned</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Search result list -->
         <div class="row mt-4">
@@ -97,7 +145,7 @@
               <div class="card-header">
                 <h5 class="mb-0">
                   <i class="material-icons me-2">location_on</i>
-                  Nearby Water Sources ({{ filteredSources.length }} found)
+                  Nearby Water Sources ({{ filteredSources.length }} found, {{ displayedSources.length }} displayed)
                 </h5>
               </div>
               <div class="card-body">
@@ -127,7 +175,7 @@
                 
                 <div v-else class="row">
                   <div 
-                    v-for="source in filteredSources" 
+                    v-for="source in displayedSources" 
                     :key="source.id"
                     class="col-md-6 col-lg-4 mb-3"
                   >
@@ -145,24 +193,25 @@
                             <h6 class="card-title mb-1">{{ source.site_name }}</h6>
                             <p class="text-muted small mb-2">{{ source.address }}</p>
                             <p class="text-muted small mb-1">{{ source.near_town }}, {{ source.lga }}</p>
-                            <div class="d-flex align-items-center mb-2">
-                              <span 
-                                class="badge me-2"
-                                :class="getStatusBadgeClass(source.status)"
-                              >
-                                {{ source.status }}
-                              </span>
-                              <span class="badge bg-info">{{ source.distance }}km</span>
-                              <span class="badge bg-secondary ms-1">{{ source.type }}</span>
+                            <div class="mb-2">
+                              <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold text-dark me-2">Status:</span>
+                                <span class="text-muted">{{ source.status }}</span>
+                              </div>
+                              <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold text-dark me-2">Suitable Use:</span>
+                                <span class="text-muted">{{ source.suitable_use }}</span>
+                              </div>
+                              <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold text-dark me-2">Distance:</span>
+                                <span class="text-muted">{{ source.distance }}km</span>
+                              </div>
+                              <div class="d-flex align-items-center mb-1">
+                                <span class="fw-bold text-dark me-2">Type:</span>
+                                <span class="text-muted">{{ source.type }}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                          <small class="text-muted">
-                            <i class="material-icons me-1" style="font-size: 1rem;">category</i>
-                            {{ source.suitable_use }}
-                          </small>
                         </div>
                         
                         <div class="d-flex justify-content-center">
@@ -178,6 +227,17 @@
                       </div>
                     </div>
                   </div>
+                </div>
+                
+                <!-- Display More Button -->
+                <div v-if="hasMoreSources" class="text-center mt-4">
+                  <button 
+                    @click="displayMore"
+                    class="btn btn-outline-primary"
+                  >
+                    <i class="material-icons me-2">expand_more</i>
+                    Display More ({{ filteredSources.length - displayedSources.length }} remaining)
+                  </button>
                 </div>
               </div>
             </div>
@@ -198,8 +258,7 @@ import Header from "../components/layout/Header.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
 
 // Reactive data
-const searchRadius = ref(50);
-const customRadius = ref(50);
+const searchRadius = ref('all');
 const selectedStatus = ref('');
 const map = ref(null);
 const userLocation = ref(null);
@@ -208,6 +267,7 @@ const markers = ref([]);
 const infoWindow = ref(null);
 const loading = ref(false);
 const error = ref(null);
+const displayedCount = ref(6);
 
 // API base URL - Auto-detect environment
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 
@@ -219,7 +279,11 @@ const fetchWaterSources = async () => {
   error.value = null;
   
   try {
-    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    // 生产环境使用（通过 Netlify _redirects 代理）
+    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    
+    // 本地开发使用（直接访问后端 API）
+    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -254,12 +318,23 @@ const filteredSources = computed(() => {
       );
       return { ...source, distance: Math.round(distance * 10) / 10 };
     }).filter(s => {
-      const radius = searchRadius.value === 'custom' ? customRadius.value : searchRadius.value;
+      if (searchRadius.value === 'all') return true;
+      const radius = parseInt(searchRadius.value);
       return s.distance <= radius;
     }).sort((a, b) => a.distance - b.distance);
   }
   
   return sources;
+});
+
+// Computed property for displayed sources (with pagination)
+const displayedSources = computed(() => {
+  return filteredSources.value.slice(0, displayedCount.value);
+});
+
+// Check if there are more sources to display
+const hasMoreSources = computed(() => {
+  return displayedCount.value < filteredSources.value.length;
 });
 
 // Calculate distance (in kilometers)
@@ -312,6 +387,11 @@ const getStatusBadgeClass = (status) => {
 
 
 
+// Display more sources
+const displayMore = () => {
+  displayedCount.value += 6;
+};
+
 // Get navigation direction
 const getDirections = (source) => {
   // Build Google Maps navigation link
@@ -325,7 +405,7 @@ const getDirections = (source) => {
     const origin = `${userLocation.value.lat},${userLocation.value.lng}`;
     googleMapsUrl = `https://www.google.com/maps/dir/${origin}/${destination}/${destinationName}`;
   } else {
-    // If there is no user location: only show the destination
+    // If there is a user location: only show the destination
     googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${destination}`;
   }
   
@@ -408,7 +488,7 @@ const addWaterSourceMarkers = () => {
         map: map.value,
         title: source.site_name,
         icon: {
-          url: getMarkerIcon(source.type),
+          url: getMarkerIcon(source.status),
           scaledSize: new google.maps.Size(32, 32)
         }
       });
@@ -451,17 +531,19 @@ const addWaterSourceMarkers = () => {
   console.log(`添加了 ${markers.value.length} 个地图标记`);
 };
 
-// Get marker icon
-const getMarkerIcon = (type) => {
-  const colors = {
-    distribution: '#2196F3',
-    emergency: '#F44336',
-    community: '#4CAF50',
-    store: '#FF9800',
-    pharmacy: '#9C27B0'
+// Get marker icon based on status
+const getMarkerIcon = (status) => {
+  const statusColors = {
+    'Operational': '#4CAF50',                 
+    'Operational - partial': '#8BC34A',
+    'Operational - proposed to decommission': '#FF9800',
+    'Operational - Requires Metered Hydrant': '#2196F3',
+    'Operational (Temporary)': '#9C27B0',
+    'Non-operational': '#F44336',
+    'Decommissioned': '#9E9E9E'
   };
   
-  const color = colors[type] || '#757575';
+  const color = statusColors[status] || '#757575';
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
     <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="16" r="14" fill="${color}" stroke="white" stroke-width="2"/>
@@ -497,25 +579,40 @@ const addUserLocationMarker = () => {
 
 // Update map search radius (no longer creating circles)
 const updateMapRadius = () => {
-  console.log('搜索半径已更新:', searchRadius.value, 'km');
+  displayedCount.value = 6; // Reset to show first 6 results
+  filterMapMarkers();
 };
 
-// Update custom radius
-const updateCustomRadius = () => {
-  if (customRadius.value && customRadius.value > 0) {
-    console.log('自定义半径已更新:', customRadius.value, 'km');
-  }
-};
+
 
 // Filter map markers
 const filterMapMarkers = () => {
   if (!map.value) return;
 
+  console.log('Applying filters:', { 
+    status: selectedStatus.value, 
+    radius: searchRadius.value 
+  });
+
   markers.value.forEach((marker, index) => {
     const source = waterSources.value[index];
-    if (source) {
+    if (source && marker) {
       const statusMatch = !selectedStatus.value || source.status === selectedStatus.value;
-      const distanceMatch = source.distance <= searchRadius.value;
+      
+      // Calculate distance if user location is available
+      let distanceMatch = true;
+      if (userLocation.value && searchRadius.value !== 'all') {
+        const distance = calculateDistance(
+          userLocation.value.lat,
+          userLocation.value.lng,
+          source.lat,
+          source.lon
+        );
+        const radius = parseInt(searchRadius.value);
+        distanceMatch = distance <= radius;
+        
+        console.log(`Source ${source.site_name}: status=${statusMatch}, distance=${distance}km <= ${radius}km = ${distanceMatch}`);
+      }
       
       marker.setMap(statusMatch && distanceMatch ? map.value : null);
     }
@@ -548,6 +645,7 @@ const getUserLocation = () => {
 
 // Watch filter changes
 watch([selectedStatus, searchRadius], () => {
+  displayedCount.value = 6; // Reset to show first 6 results
   filterMapMarkers();
 });
 
