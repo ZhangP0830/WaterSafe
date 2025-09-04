@@ -74,14 +74,9 @@ const completeAll = () => {
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-warning me-2">warning</i>
             Early Signs of Contamination
           </h3>
           <p class="text-muted mb-2">Water quality may be compromised, but no official notice yet.</p>
-          <div class="d-flex align-items-center text-muted">
-            <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Monitor water quality changes</small>
-          </div>
         </div>
         <div class="text-end">
           <div class="h4 mb-0 text-warning">{{ progress.percentage }}%</div>

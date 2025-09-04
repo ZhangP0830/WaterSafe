@@ -45,14 +45,9 @@ const completeAll = () => {
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-danger me-2">block</i>
             Severe Contamination
           </h3>
           <p class="text-muted mb-2">Chemical or toxic contamination present. Boiling is not effective.</p>
-          <div class="d-flex align-items-center text-muted">
-            <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Until further notice</small>
-          </div>
         </div>
         <div class="text-end">
           <div class="h4 mb-0 text-danger">{{ progress.percentage }}%</div>

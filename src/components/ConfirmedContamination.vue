@@ -69,14 +69,9 @@ const completeAll = () => {
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
-            <i class="material-icons text-danger me-2">local_fire_department</i>
             Confirmed Contamination
           </h3>
           <p class="text-muted mb-2">Microbial contamination present. All water must be boiled before use.</p>
-          <div class="d-flex align-items-center text-muted">
-            <i class="material-icons me-1" style="font-size: 1rem;">schedule</i>
-            <small>Usually 24-72 hours</small>
-          </div>
         </div>
         <div class="text-end">
           <div class="h4 mb-0 text-primary">{{ progress.percentage }}%</div>
