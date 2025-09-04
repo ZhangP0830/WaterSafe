@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-// 任务数据
+// tasks data
 const tasks = ref([
   {
     id: 1,
@@ -33,7 +33,7 @@ const tasks = ref([
   }
 ]);
 
-// 计算进度
+// calculate progress
 const progress = computed(() => {
   const completed = tasks.value.filter(task => task.completed).length;
   const total = tasks.value.length;
@@ -44,7 +44,7 @@ const progress = computed(() => {
   };
 });
 
-// 切换任务状态
+// toggle task status
 const toggleTask = (taskId) => {
   const task = tasks.value.find(t => t.id === taskId);
   if (task) {
@@ -52,14 +52,14 @@ const toggleTask = (taskId) => {
   }
 };
 
-// 重置所有任务
+// reset all tasks
 const resetAll = () => {
   tasks.value.forEach(task => {
     task.completed = false;
   });
 };
 
-// 完成所有任务
+// complete all tasks
 const completeAll = () => {
   tasks.value.forEach(task => {
     task.completed = true;
@@ -70,7 +70,7 @@ const completeAll = () => {
 <template>
   <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-      <!-- 标题区域 -->
+      <!-- title area -->
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
@@ -84,7 +84,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 警告框 -->
+      <!-- warning box -->
       <div class="alert alert-warning d-flex align-items-start mb-4">
         <i class="material-icons me-2 mt-1">warning</i>
         <div>
@@ -92,7 +92,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 任务列表 -->
+      <!-- task list -->
       <div class="task-list">
         <div 
           v-for="task in tasks" 
@@ -137,7 +137,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 底部操作区域 -->
+      <!-- bottom operation area -->
       <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
         <div class="text-muted">
           Progress: {{ progress.completed }}/{{ progress.total }} tasks
@@ -178,7 +178,7 @@ const completeAll = () => {
   font-size: 0.75rem;
 }
 
-/* 响应式调整 */
+/* responsive adjustment */
 @media (max-width: 768px) {
   .task-item {
     padding: 0.75rem !important;
