@@ -252,9 +252,15 @@ const usageSteps = [
 }
 
 .icon-shape {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.icon-shape i {
+  position: static !important;
+  top: auto !important;
+  transform: none !important;
 }
 
 .ni {
