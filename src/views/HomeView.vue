@@ -26,7 +26,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- 导航栏 -->
+  <!-- navbar -->
   <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
       <div class="col-12">
@@ -35,7 +35,7 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <!-- 英雄区域 -->
+  <!-- hero section -->
   <Header>
     <div
       class="page-header min-vh-100"
@@ -62,13 +62,13 @@ onUnmounted(() => {
     </div>
   </Header>
 
-    <!-- 主要内容区域 -->
+    <!-- main content section -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-    <!-- 这里可以添加您需要的内容 -->
+    <!-- here you can add your content -->
      <HomeInformation />
   </div>
 
-  <!-- 页脚 -->
+  <!-- footer -->
   <DefaultFooter />
 </template>
 

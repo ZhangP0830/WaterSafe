@@ -1,22 +1,22 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
 
-// 导入组件
+// import components
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
 import Header from "../components/layout/Header.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
 
-// 导入图片资源
-import heroBg from "@/assets/img/bg9.jpg";
+// import image resources
+import heroBg from "@/assets/img/ai-background.png";
 
-// 页面生命周期
+// page lifecycle
 const body = document.getElementsByTagName("body")[0];
 onMounted(() => {
   body.classList.add("voice-assistant-page");
   body.classList.add("bg-gray-100");
   
-  // 动态加载 ElevenLabs 脚本
+  // dynamically load ElevenLabs script
   loadElevenLabsScript();
 });
 
@@ -25,9 +25,9 @@ onUnmounted(() => {
   body.classList.remove("bg-gray-100");
 });
 
-// 加载 ElevenLabs 脚本的函数
+// function to load ElevenLabs script
 const loadElevenLabsScript = () => {
-  // 检查脚本是否已经加载
+  // check if the script is already loaded
   if (document.querySelector('script[src*="convai-widget-embed"]')) {
     return;
   }
@@ -39,7 +39,7 @@ const loadElevenLabsScript = () => {
   document.head.appendChild(script);
 };
 
-// 滚动到功能区域
+// scroll to features section
 const scrollToFeatures = () => {
   const featuresElement = document.getElementById('features');
   if (featuresElement) {
@@ -50,7 +50,7 @@ const scrollToFeatures = () => {
   }
 };
 
-// 功能说明数据
+// features data
 const features = [
   {
     icon: "mic",
@@ -74,7 +74,7 @@ const features = [
   }
 ];
 
-// 使用说明步骤
+// usage steps
 const usageSteps = [
   {
     step: "1",
@@ -100,7 +100,7 @@ const usageSteps = [
 </script>
 
 <template>
-  <!-- 导航栏 -->
+  <!-- navbar -->
   <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
       <div class="col-12">
@@ -109,7 +109,7 @@ const usageSteps = [
     </div>
   </div>
 
-  <!-- 英雄区域 -->
+  <!-- hero section -->
   <Header>
     <div
       class="page-header min-vh-100"
@@ -147,9 +147,9 @@ const usageSteps = [
     </div>
   </Header>
 
-  <!-- 主要内容区域 -->
+  <!-- main content section -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-    <!-- 功能特性部分 -->
+    <!-- features section -->
     <section class="py-5" id="features">
       <div class="container">
         <div class="row">
@@ -182,7 +182,7 @@ const usageSteps = [
       </div>
     </section>
 
-    <!-- 使用说明部分 -->
+    <!-- usage steps section -->
     <section class="py-5 bg-gray-100">
       <div class="container">
         <div class="row">
@@ -219,7 +219,7 @@ const usageSteps = [
       </div>
     </section>
 
-    <!-- 语音助手激活区域 -->
+    <!-- voice assistant activation section -->
     <section class="py-5">
       <div class="container">
         <div class="row">
@@ -235,10 +235,10 @@ const usageSteps = [
     </section>
   </div>
 
-  <!-- ElevenLabs 对话组件 -->
+  <!-- ElevenLabs conversation component -->
   <elevenlabs-convai agent-id="agent_5201k4856sm6fa1sna9v4hr7xev5"></elevenlabs-convai>
 
-  <!-- 页脚 -->
+  <!-- footer -->
   <DefaultFooter />
 </template>
 
@@ -261,7 +261,7 @@ const usageSteps = [
   font-family: 'Nucleo Icons';
 }
 
-/* 语音助手样式 */
+/* voice assistant style */
 elevenlabs-convai {
   position: fixed;
   bottom: 20px;
@@ -269,7 +269,7 @@ elevenlabs-convai {
   z-index: 1000;
 }
 
-/* 响应式调整 */
+/* responsive adjustment */
 @media (max-width: 768px) {
   .display-3 {
     font-size: 2.5rem;
@@ -285,7 +285,7 @@ elevenlabs-convai {
   }
 }
 
-/* 动画效果 */
+/* animation effect */
 .card {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
@@ -303,7 +303,7 @@ elevenlabs-convai {
   transform: scale(1.1);
 }
 
-/* 渐变文本 */
+/* gradient text */
 .text-gradient {
   background: linear-gradient(45deg, #007bff, #0056b3);
   -webkit-background-clip: text;
