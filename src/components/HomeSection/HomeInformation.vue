@@ -20,10 +20,10 @@ import DefaultInfoCard from "../cards/infoCards/DefaultInfoCard.vue";
             <RotatingCardBack
               image="/src/assets/img/rotatecard-background.png"
               title="Explore Our Platform"
-              description="Discover water quality monitoring, safety guidelines, trusted alternatives, and real-time emergency notifications to keep your family safe."
+              description="Discover water safety guidelines, trusted alternatives, and get instant water safety guidance to keep your family safe."
               :action="[
                 {
-                  route: '/water-safety-hub',
+                  route: '/water-safety-companion',
                   label: 'Get Started',
                 },
               ]"

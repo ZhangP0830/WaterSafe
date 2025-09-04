@@ -32,7 +32,7 @@ onUnmounted(() => {
   <!-- Head -->
   <Header>
     <div
-      class="page-header min-vh-75"
+      class="page-header min-vh-100"
       :style="`background-image: url(${heroBg})`"
       loading="lazy"
     >
