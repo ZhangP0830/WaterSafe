@@ -8,10 +8,10 @@ import EarlySignsOfContamination from "./EarlySignsOfContamination.vue";
 // nav-pill
 import setNavPills from "@/assets/js/nav-pills.js";
 
-// 当前激活的tab
+// current active tab
 const activeTab = ref('early-signs');
 
-// 切换tab
+// switch tab
 const switchTab = (tabName) => {
   console.log('Switching to tab:', tabName);
   activeTab.value = tabName;
@@ -82,7 +82,7 @@ onMounted(() => {
             </ul>
           </div>
           
-          <!-- 标签内容区域 -->
+          <!-- label content area -->
           <div class="mt-4">
             <!-- Early Signs of Contamination Tab -->
             <div v-if="activeTab === 'early-signs'">
@@ -122,7 +122,7 @@ onMounted(() => {
   flex: 1;
 }
 
-/* 响应式调整 */
+/* responsive adjustment */
 @media (max-width: 768px) {
   .nav-pills .nav-link {
     font-size: 0.8rem;

@@ -4,7 +4,7 @@ import { onMounted, onUnmounted } from "vue";
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
 import Header from "../components/layout/Header.vue";
-import AwarenessNavTab from "../components/AwarenessNavTab.vue";
+import AwarenessNavTab from "../components/AwarenessSection/AwarenessNavTab.vue";
 
 import heroBg from "@/assets/img/awarenesshubbackground.png";
 
