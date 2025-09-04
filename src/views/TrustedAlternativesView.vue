@@ -11,9 +11,10 @@
     <!-- Page header -->
     <Header>
       <div
-        class="page-header min-vh-75"
-        style="background-image: url('/src/assets/img/trusted-background.png')"
-      >
+      class="page-header min-vh-100"
+      :style="`background-image: url(${heroBg})`"
+      loading="lazy"
+    >
         <div class="container">
           <div class="row">
             <div class="col-lg-8 mx-auto text-center">
@@ -261,6 +262,7 @@ import { Loader } from '@googlemaps/js-api-loader';
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
 import Header from "../components/layout/Header.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
+import heroBg from "@/assets/img/trusted-background.png";
 
 // Reactive data
 const searchRadius = ref('all');
