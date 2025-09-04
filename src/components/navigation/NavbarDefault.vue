@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from "vue-router";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useWindowsWidth } from "../../assets/js/useWindowsWidth";
 
 // images
@@ -68,9 +68,21 @@ const getTextColor = () => {
 };
 
 // set nav color on mobile && desktop
-
 let textDark = ref(props.darkText);
 const { type } = useWindowsWidth();
+
+// Mobile menu state
+const isMenuOpen = ref(false);
+
+// Toggle mobile menu
+const toggleMobileMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+
+// Close mobile menu when clicking on a link
+const closeMobileMenu = () => {
+  isMenuOpen.value = false;
+};
 
 if (type.value === "mobile") {
   textDark.value = true;
@@ -89,6 +101,39 @@ watch(
   }
 );
 </script>
+
+<style scoped>
+/* Mobile menu styles */
+.navbar-collapse {
+  transition: all 0.3s ease;
+}
+
+.navbar-collapse.collapse {
+  display: none;
+}
+
+.navbar-collapse.show {
+  display: block;
+}
+
+/* Ensure mobile menu is visible on small screens */
+@media (max-width: 991.98px) {
+  .navbar-collapse.collapse {
+    display: none !important;
+  }
+  
+  .navbar-collapse.show {
+    display: block !important;
+  }
+}
+
+/* Desktop menu should always be visible */
+@media (min-width: 992px) {
+  .navbar-collapse {
+    display: flex !important;
+  }
+}
+</style>
 <template>
   <nav
     class="navbar navbar-expand-lg top-0"
@@ -139,10 +184,9 @@ watch(
       <button
         class="navbar-toggler shadow-none ms-2"
         type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navigation"
+        @click="toggleMobileMenu"
         aria-controls="navigation"
-        aria-expanded="false"
+        :aria-expanded="isMenuOpen"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon mt-2">
@@ -152,7 +196,8 @@ watch(
         </span>
       </button>
       <div
-        class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0"
+        class="navbar-collapse w-100 pt-3 pb-2 py-lg-0"
+        :class="{ 'collapse': !isMenuOpen, 'show': isMenuOpen }"
         id="navigation"
       >
         <ul class="navbar-nav navbar-nav-hover ms-auto">
@@ -161,6 +206,7 @@ watch(
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
               :to="{ name: 'water-safety-hub' }"
+              @click="closeMobileMenu"
             >
               <i
                 class="material-icons opacity-6 me-2 text-md"
@@ -175,6 +221,7 @@ watch(
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
               :to="{ name: 'trusted-alternatives' }"
+              @click="closeMobileMenu"
             >
               <i
                 class="material-icons opacity-6 me-2 text-md"

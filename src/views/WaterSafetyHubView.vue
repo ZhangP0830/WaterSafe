@@ -6,7 +6,7 @@ import DefaultFooter from "../components/layout/FooterDefault.vue";
 import Header from "../components/layout/Header.vue";
 import AwarenessNavTab from "../components/AwarenessNavTab.vue";
 
-import heroBg from "@/assets/img/bg9.jpg";
+import heroBg from "@/assets/img/awarenesshubbackground.png";
 
 const body = document.getElementsByTagName("body")[0];
 onMounted(() => {
@@ -40,13 +40,13 @@ onUnmounted(() => {
         <div class="row">
           <div class="col-lg-8 text-center mx-auto position-relative">
             <h1
-              class="text-white pt-3 mt-n5 me-2 display-3 fw-bold"
+              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
               :style="{ display: 'inline-block' }"
             >
               Water Safety Awareness Hub
             </h1>
             <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Need add more content here
+              Comprehensive water safety guidance and step-by-step procedures for different contamination stages to protect your family.
             </p>
           </div>
         </div>
@@ -58,8 +58,6 @@ onUnmounted(() => {
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
     <!-- Content -->
     <AwarenessNavTab />
-    
-    <!-- Need add more -->
   </div>
 
   <!-- Footer -->

@@ -12,13 +12,18 @@
     <Header>
       <div
         class="page-header min-vh-75"
-        style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+        style="background-image: url('/src/assets/img/trusted-background.jpg')"
       >
         <div class="container">
           <div class="row">
             <div class="col-lg-8 mx-auto text-center">
-              <h1 class="text-white mb-4">Trusted Alternatives Finder</h1>
-              <p class="text-white opacity-8 mb-4">
+              <h1
+              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
+              :style="{ display: 'inline-block' }"
+            >
+              Trusted Alternatives Finder
+            </h1>
+              <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
                 Find safe drinking water sources near you during water advisories
               </p>
             </div>
@@ -280,20 +285,20 @@ const fetchWaterSources = async () => {
   
   try {
     // Use this for deployment
-    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     
     // Use this for local development
-    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
     const data = await response.json();
     waterSources.value = data;
-    console.log(`成功获取 ${data.length} 个水源点`);
+    console.log(`successfully got ${data.length} water sources`);
   } catch (err) {
-    error.value = `获取水源点数据失败: ${err.message}`;
-    console.error('API 调用失败:', err);
+    error.value = `failed to get water source data: ${err.message}`;
+    console.error('API call failed:', err);
   } finally {
     loading.value = false;
   }

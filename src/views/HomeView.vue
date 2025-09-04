@@ -7,9 +7,9 @@ import DefaultFooter from "../components/layout/FooterDefault.vue";
 import Header from "../components/layout/Header.vue";
 import FilledInfoCard from "../components/cards/infoCards/FilledInfoCard.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
-
+import HomeInformation from "../components/HomeSection/HomeInformation.vue";
 // 导入图片资源
-import heroBg from "@/assets/img/bg9.jpg";
+import heroBg from "@/assets/img/homebackground.png";
 
 // 页面生命周期
 const body = document.getElementsByTagName("body")[0];
@@ -46,13 +46,13 @@ onUnmounted(() => {
         <div class="row">
           <div class="col-lg-8 text-center mx-auto position-relative">
             <h1
-              class="text-white pt-3 mt-n5 me-2 display-3 fw-bold"
+              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
               :style="{ display: 'inline-block' }"
             >
               Water Safety
             </h1>
             <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Need add more content here
+              Safe Water for Every Stage of Life.
             </p>
             <div class="d-flex justify-content-center gap-3 flex-wrap">
             </div>
@@ -65,6 +65,7 @@ onUnmounted(() => {
     <!-- 主要内容区域 -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
     <!-- 这里可以添加您需要的内容 -->
+     <HomeInformation />
   </div>
 
   <!-- 页脚 -->
