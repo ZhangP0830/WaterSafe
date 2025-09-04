@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-// 任务数据
+// tasks data
 const tasks = ref([
   { id: 1, text: "Run all taps for several minutes to flush pipes", time: "Within 1 hour — Safe", tag: "SAFE", completed: false },
   { id: 2, text: "Wash and disinfect bottles, utensils, and storage containers", time: "Within 2 hours — Safe", tag: "SAFE", completed: false },
@@ -9,7 +9,7 @@ const tasks = ref([
   { id: 4, text: "Inform family and caregivers it's safe to use tap water again", time: "Within 24 hours — Safe", tag: "SAFE", completed: false }
 ]);
 
-// 计算进度
+// calculate progress
 const progress = computed(() => {
   const completed = tasks.value.filter(task => task.completed).length;
   return {
@@ -19,7 +19,7 @@ const progress = computed(() => {
   };
 });
 
-// 切换任务状态
+// toggle task status
 const toggleTask = (taskId) => {
   const task = tasks.value.find(t => t.id === taskId);
   if (task) {
@@ -27,12 +27,12 @@ const toggleTask = (taskId) => {
   }
 };
 
-// 重置所有任务
+// reset all tasks
 const resetAll = () => {
   tasks.value.forEach(task => task.completed = false);
 };
 
-// 完成所有任务
+// complete all tasks
 const completeAll = () => {
   tasks.value.forEach(task => task.completed = true);
 };
@@ -41,7 +41,7 @@ const completeAll = () => {
 <template>
   <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-      <!-- 标题区域 -->
+      <!-- title area -->
       <div class="d-flex align-items-center mb-4">
         <div class="flex-grow-1">
           <h3 class="mb-1">
@@ -55,7 +55,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 安全提示框 -->
+      <!-- safe tip box -->
       <div class="alert alert-success d-flex align-items-start mb-4">
         <i class="material-icons me-2 mt-1">check_circle</i>
         <div>
@@ -63,7 +63,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 任务列表 -->
+      <!-- task list -->
       <div class="task-list">
         <div 
           v-for="task in tasks" 
@@ -109,7 +109,7 @@ const completeAll = () => {
         </div>
       </div>
       
-      <!-- 底部操作区域 -->
+      <!-- bottom operation area -->
       <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
         <div class="text-muted">
           Progress: {{ progress.count }}/{{ progress.total }} tasks
