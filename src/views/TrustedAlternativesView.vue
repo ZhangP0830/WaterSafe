@@ -285,10 +285,10 @@ const fetchWaterSources = async () => {
   
   try {
     // Use this for deployment
-    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     
     // Use this for local development
-    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
+    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
