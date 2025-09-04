@@ -12,7 +12,7 @@
     <Header>
       <div
         class="page-header min-vh-75"
-        style="background-image: url('/src/assets/img/trusted-background.jpg')"
+        style="background-image: url('/src/assets/img/trusted-background.png')"
       >
         <div class="container">
           <div class="row">
