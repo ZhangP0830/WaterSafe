@@ -1,5 +1,7 @@
 # WaterSafe
 
+https://water-safety.netlify.app/
+
 Water safety awareness and trusted alternatives finder application.
 
 ## Local Development
