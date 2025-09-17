@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import WaterSafetyHubView from "../views/WaterSafetyHubView.vue";
 import TrustedAlternativesView from "../views/TrustedAlternativesView.vue";
 import VoiceAssistantView from "../views/VoiceAssistantView.vue";
+import WaterQualityPredictionView from "../views/WaterQualityPredictionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: "/water-safety-companion",
       name: "water-safety-companion",
       component: VoiceAssistantView,
+    },
+    {
+      path: "/water-quality-prediction",
+      name: "water-quality-prediction",
+      component: WaterQualityPredictionView,
     },
   ],
 });
