@@ -45,7 +45,7 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL ||
 // Load available suburbs for autocomplete
 const loadAvailableSuburbs = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/prediction/suburbs`);
+    const response = await fetch(`${API_BASE_URL}/prediction/suburbs`);
     if (response.ok) {
       const data = await response.json();
       availableSuburbs.value = data.suburbs.map(suburb => suburb.nearest_suburb);
@@ -206,7 +206,7 @@ const searchSuburbAndPredict = async () => {
   
   try {
     // First, search for sites in the suburb
-    const response = await fetch(`${API_BASE_URL}/api/prediction/search-by-suburb`, {
+    const response = await fetch(`${API_BASE_URL}/prediction/search-by-suburb`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ const searchBySiteId = async () => {
   
   try {
     // Call the real prediction API
-    const response = await fetch(`${API_BASE_URL}/api/prediction/predict`, {
+    const response = await fetch(`${API_BASE_URL}/prediction/predict`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
