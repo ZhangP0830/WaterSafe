@@ -123,14 +123,40 @@
         <div class="row">
           <div class="col-12">
             <h2 class="text-center mb-5">Where are you?</h2>
+            <p class="text-center text-muted mb-4">Select your current location to get personalized guidance</p>
+            
+            <!-- Inline Validation Error -->
+            <div v-if="placeValidationError" class="alert alert-danger text-center mb-4" role="alert">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              {{ placeValidationError }}
+            </div>
+            
             <div class="row g-4">
               <div class="col-12 col-md-6 col-lg-3" v-for="placeOption in placeOptions" :key="placeOption.value">
-                <div class="place-card" :class="{ selected: place === placeOption.value }" @click="selectPlace(placeOption.value)">
+                <div 
+                  class="place-card" 
+                  :class="{ 
+                    selected: place === placeOption.value,
+                    'has-error': placeValidationError && !place
+                  }" 
+                  @click="selectPlace(placeOption.value)"
+                  @keydown.enter="selectPlace(placeOption.value)"
+                  @keydown.space.prevent="selectPlace(placeOption.value)"
+                  :tabindex="0"
+                  role="button"
+                  :aria-pressed="place === placeOption.value"
+                  :aria-label="`Select ${placeOption.label} - ${placeOption.description}`"
+                >
                   <div class="card-icon" :class="placeOption.iconClass">
                     <i :class="placeOption.icon"></i>
                   </div>
-                  <h5>{{ placeOption.label }}</h5>
-                  <p>{{ placeOption.description }}</p>
+                  <div class="card-content">
+                    <h5>{{ placeOption.label }}</h5>
+                    <p>{{ placeOption.description }}</p>
+                  </div>
+                  <div class="card-selection-indicator">
+                    <i class="fas fa-check-circle"></i>
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,7 +171,7 @@
         <div class="row">
           <div class="col-12">
             <h3 class="text-center mb-4">Special considerations</h3>
-            <div class="row g-3">
+            <div class="row g-3 justify-content-center">
               <div class="col-12 col-md-6">
                 <div class="profile-card" :class="{ active: profile.pregnant }" @click="updateProfile('pregnant', !profile.pregnant)">
                   <div class="profile-icon">
@@ -161,20 +187,6 @@
                 </div>
               </div>
               <div class="col-12 col-md-6">
-                <div class="profile-card" :class="{ active: profile.postpartum }" @click="updateProfile('postpartum', !profile.postpartum)">
-                  <div class="profile-icon">
-                    <i class="fas fa-user-injured"></i>
-                  </div>
-                  <div class="profile-content">
-                    <h5>Postpartum</h5>
-                    <p>Recovery period hygiene care</p>
-                  </div>
-                  <div class="profile-toggle">
-                    <i class="fas fa-check" v-if="profile.postpartum"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
                 <div class="profile-card" :class="{ active: profile.infant }" @click="updateProfile('infant', !profile.infant)">
                   <div class="profile-icon">
                     <i class="fas fa-baby"></i>
@@ -185,20 +197,6 @@
                   </div>
                   <div class="profile-toggle">
                     <i class="fas fa-check" v-if="profile.infant"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <div class="profile-card" :class="{ active: profile.immunocompromised }" @click="updateProfile('immunocompromised', !profile.immunocompromised)">
-                  <div class="profile-icon">
-                    <i class="fas fa-shield-alt"></i>
-                  </div>
-                  <div class="profile-content">
-                    <h5>Immunocompromised</h5>
-                    <p>Extra precautions for weakened immune system</p>
-                  </div>
-                  <div class="profile-toggle">
-                    <i class="fas fa-check" v-if="profile.immunocompromised"></i>
                   </div>
                 </div>
               </div>
@@ -322,6 +320,21 @@
                           <button class="btn btn-link btn-sm p-0" @click="openWhyModal(item)">
                             <i class="fas fa-question-circle me-1"></i>Why is this important?
                           </button>
+                          
+                          <!-- Source References -->
+                          <div v-if="item.sources && item.sources.length > 0" class="item-sources">
+                            <a 
+                              v-for="source in item.sources" 
+                              :key="source.label"
+                              :href="source.url" 
+                              target="_blank" 
+                              rel="noopener"
+                              class="source-chip"
+                              :aria-label="`Reference: ${source.label}`"
+                            >
+                              {{ source.label }}
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -381,6 +394,21 @@
                           <button class="btn btn-link btn-sm p-0" @click="openWhyModal(item)">
                             <i class="fas fa-question-circle me-1"></i>Why is this important?
                           </button>
+                          
+                          <!-- Source References -->
+                          <div v-if="item.sources && item.sources.length > 0" class="item-sources">
+                            <a 
+                              v-for="source in item.sources" 
+                              :key="source.label"
+                              :href="source.url" 
+                              target="_blank" 
+                              rel="noopener"
+                              class="source-chip"
+                              :aria-label="`Reference: ${source.label}`"
+                            >
+                              {{ source.label }}
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -591,9 +619,17 @@
           <div class="message-content">
             <p>{{ message.content }}</p>
             <div v-if="message.sources && message.sources.length" class="message-sources">
-              <div v-for="source in message.sources" :key="source.label" class="source-chip">
-                <a :href="source.url" target="_blank" rel="noopener">{{ source.label }}</a>
-              </div>
+              <a 
+                v-for="source in message.sources" 
+                :key="source.label"
+                :href="source.url" 
+                target="_blank" 
+                rel="noopener"
+                class="source-chip"
+                :aria-label="`Reference: ${source.label}`"
+              >
+                {{ source.label }}
+              </a>
             </div>
           </div>
           <small class="message-time">{{ message.timestamp.toLocaleTimeString() }}</small>
@@ -624,6 +660,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Notification -->
+    <div v-if="showToast" class="toast-container">
+      <div class="toast" :class="'toast-' + toastType" role="alert" aria-live="polite">
+        <div class="toast-header">
+          <i :class="getToastIcon()" class="me-2"></i>
+          <strong class="me-auto">{{ getToastTitle() }}</strong>
+          <button type="button" class="btn-close" @click="hideToast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          {{ toastMessage }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -640,9 +690,7 @@ export default {
       place: "",
       profile: {
         pregnant: false,
-        postpartum: false,
-        infant: false,
-        immunocompromised: false
+        infant: false
       },
       issues: [],
       
@@ -651,6 +699,12 @@ export default {
       error: "",
       checklistData: null, // New structured checklist data
       checklist: [], // Legacy format for backward compatibility
+      
+      // Validation state
+      placeValidationError: "",
+      showToast: false,
+      toastMessage: "",
+      toastType: "error", // error, success, info
       
       // Micro-flows
       showHandwashTimer: false,
@@ -784,6 +838,7 @@ export default {
     },
     selectPlace(place) {
       this.place = place;
+      this.placeValidationError = ""; // Clear validation error when place is selected
     },
     nextStep() {
       if (this.currentStep < 3) {
@@ -793,6 +848,8 @@ export default {
     goBack() {
       if (this.currentStep > 1) {
         this.currentStep--;
+        // Clear validation errors when going back
+        this.placeValidationError = "";
       }
     },
     getPlaceLabel() {
@@ -802,7 +859,15 @@ export default {
     
     // Checklist generation
     async generateChecklist() {
+      // Validate place selection
+      if (!this.place) {
+        this.placeValidationError = "Please select your location to continue";
+        this.showToastMessage("Please select your location to get personalized guidance", "error");
+        return;
+      }
+      
       this.error = "";
+      this.placeValidationError = "";
       this.loading = true;
       this.checklistData = null;
       this.checklist = [];
@@ -816,7 +881,8 @@ export default {
           issues: this.issues
         };
         
-        const res = await fetch("/api/guidance/checklist", {
+        // Always use force=true when user clicks "Get My Checklist" to ensure fresh LLM call
+        const res = await fetch("/api/guidance/checklist?force=true", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(context),
@@ -836,11 +902,55 @@ export default {
         // Initialize chat with context
         this.initializeChatBot();
         
+        // Show success message
+        this.showToastMessage("Your personalized checklist is ready!", "success");
+        
       } catch (e) {
         this.error = e?.message || "Error generating checklist";
         this.currentStep = 2; // Go back to place selection on error
+        this.showToastMessage("Sorry, we couldn't generate your checklist. Please try again.", "error");
       } finally {
         this.loading = false;
+      }
+    },
+    
+    // Auto-load checklist (for page revisits, allows cache)
+    async loadChecklistFromCache() {
+      if (!this.place || !this.mode) return;
+      
+      try {
+        const context = {
+          mode: this.mode,
+          place: this.place,
+          profile: this.profile,
+          issues: this.issues
+        };
+        
+        // Use force=false to allow cache hits for auto-loading
+        const res = await fetch("/api/guidance/checklist?force=false", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(context),
+        });
+        
+        if (!res.ok) return; // Silently fail for auto-loading
+        
+        const data = await res.json();
+        this.checklistData = data;
+        
+        // Convert to legacy format for backward compatibility
+        const allItems = [
+          ...(data.summary_top3 || []),
+          ...(data.sections?.flatMap(section => section.items) || [])
+        ];
+        this.checklist = allItems;
+        
+        // Initialize chat with context
+        this.initializeChatBot();
+        
+      } catch (e) {
+        // Silently fail for auto-loading
+        console.log("Auto-load failed:", e);
       }
     },
     
@@ -1055,13 +1165,43 @@ export default {
           issues: this.issues
         };
         
+        // Collect all sources from checklist items for chat bot context
+        const allSources = [];
+        if (this.checklistData) {
+          // Add sources from top 3 urgent actions
+          if (this.checklistData.summary_top3) {
+            this.checklistData.summary_top3.forEach(item => {
+              if (item.sources) {
+                allSources.push(...item.sources);
+              }
+            });
+          }
+          // Add sources from sections
+          if (this.checklistData.sections) {
+            this.checklistData.sections.forEach(section => {
+              if (section.items) {
+                section.items.forEach(item => {
+                  if (item.sources) {
+                    allSources.push(...item.sources);
+                  }
+                });
+              }
+            });
+          }
+          // Add general sources
+          if (this.checklistData.sources) {
+            allSources.push(...this.checklistData.sources);
+          }
+        }
+        
         const res = await fetch("/api/guidance/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: this.chatMessages.map(msg => ({ role: msg.role, content: msg.content })),
             context: context,
-            checklist: this.checklistData
+            checklist: this.checklistData,
+            sources: allSources
           }),
         });
         
@@ -1089,6 +1229,42 @@ export default {
     // Profile management
     updateProfile(field, value) {
       this.profile[field] = value;
+    },
+    
+    // Toast notification methods
+    showToastMessage(message, type = "info") {
+      this.toastMessage = message;
+      this.toastType = type;
+      this.showToast = true;
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        this.hideToast();
+      }, 5000);
+    },
+    
+    hideToast() {
+      this.showToast = false;
+      this.toastMessage = "";
+      this.toastType = "info";
+    },
+    
+    getToastIcon() {
+      switch (this.toastType) {
+        case "error": return "fas fa-exclamation-triangle";
+        case "success": return "fas fa-check-circle";
+        case "info": return "fas fa-info-circle";
+        default: return "fas fa-info-circle";
+      }
+    },
+    
+    getToastTitle() {
+      switch (this.toastType) {
+        case "error": return "Error";
+        case "success": return "Success";
+        case "info": return "Information";
+        default: return "Information";
+      }
     },
     
     // Section completion helpers
@@ -1452,6 +1628,140 @@ export default {
   transform: scale(1);
 }
 
+/* Place Card Error State */
+.place-card.has-error {
+  border-color: #dc3545;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1050;
+  max-width: 400px;
+}
+
+.toast {
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid #e9ecef;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.toast-error {
+  border-left: 4px solid #dc3545;
+}
+
+.toast-success {
+  border-left: 4px solid #28a745;
+}
+
+.toast-info {
+  border-left: 4px solid #17a2b8;
+}
+
+.toast-header {
+  background: transparent;
+  border-bottom: 1px solid #e9ecef;
+  padding: 1rem 1.5rem 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.toast-body {
+  padding: 0.5rem 1.5rem 1rem;
+  color: var(--slate-700);
+  line-height: 1.5;
+}
+
+.toast .btn-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.toast .btn-close:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Enhanced Place Card Styling */
+.place-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.place-card:focus {
+  outline: 2px solid var(--teal-600);
+  outline-offset: 2px;
+}
+
+.place-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(13, 148, 136, 0.15);
+  border-color: var(--teal-600);
+}
+
+.place-card.selected {
+  border-color: var(--teal-600);
+  background: linear-gradient(135deg, var(--teal-50) 0%, var(--cyan-50) 100%);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(13, 148, 136, 0.25);
+}
+
+.place-card .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.place-card h5 {
+  color: var(--slate-900);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.place-card p {
+  color: var(--slate-700);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
 .card-badge {
   position: absolute;
   top: 1rem;
@@ -1779,6 +2089,77 @@ export default {
   color: #6c757d;
   font-size: 0.9rem;
   line-height: 1.4;
+}
+
+/* Source References */
+.item-sources {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  background: var(--teal-50);
+  color: var(--teal-700);
+  text-decoration: none;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--teal-200);
+  transition: all 0.2s ease;
+  line-height: 1.2;
+}
+
+.source-chip:hover {
+  background: var(--teal-100);
+  color: var(--teal-800);
+  text-decoration: underline;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(13, 148, 136, 0.1);
+}
+
+.source-chip:focus {
+  outline: 2px solid var(--teal-600);
+  outline-offset: 2px;
+}
+
+/* Brand-specific source chip colors */
+.source-chip[href*="who.int"] {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #bbdefb;
+}
+
+.source-chip[href*="who.int"]:hover {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+.source-chip[href*="cdc.gov"] {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border-color: #e1bee7;
+}
+
+.source-chip[href*="cdc.gov"]:hover {
+  background: #e1bee7;
+  color: #4a148c;
+}
+
+.source-chip[href*="health.gov"] {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border-color: #c8e6c9;
+}
+
+.source-chip[href*="health.gov"]:hover {
+  background: #c8e6c9;
+  color: #1b5e20;
 }
 
 /* Category Groups */
@@ -2437,6 +2818,13 @@ export default {
     right: 1rem;
   }
   
+  .toast-container {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+  
   .micro-flow-modal {
     margin: 1rem;
     max-width: none;
@@ -2454,6 +2842,27 @@ export default {
   
   .timer-seconds {
     font-size: 2rem;
+  }
+  
+  /* Mobile source chips */
+  .item-sources {
+    margin-top: 0.5rem;
+    gap: 0.375rem;
+  }
+  
+  .source-chip {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+  
+  .message-sources {
+    margin-top: 0.375rem;
+    gap: 0.25rem;
+  }
+  
+  .message-sources .source-chip {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
   }
 }
 

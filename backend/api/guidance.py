@@ -1,16 +1,29 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import os
+import hashlib
+import json
+import time
+import logging
 
 router = APIRouter(prefix="/api/guidance", tags=["guidance"])
+
+# In-memory cache for checklist responses
+# Structure: {hash: {"data": ChecklistResponse, "ts": timestamp}}
+_checklist_cache = {}
+
+# Cache TTL in seconds (15 minutes)
+CACHE_TTL = 15 * 60
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class GuidanceFlags(BaseModel):
     pregnant: bool = False
-    postpartum: bool = False
     infant: bool = False
-    immunocompromised: bool = False
 
 
 class SanitationRequest(BaseModel):
@@ -18,6 +31,11 @@ class SanitationRequest(BaseModel):
     place: str = Field(pattern="^(home|safe-site|rescue|temporary)$")
     profile: GuidanceFlags
     issues: List[str] = Field(default_factory=list)  # e.g., ["toilet_unusable", "no_running_water"]
+
+
+class ChecklistSource(BaseModel):
+    label: str
+    url: Optional[str] = None
 
 
 class ChecklistItem(BaseModel):
@@ -30,6 +48,7 @@ class ChecklistItem(BaseModel):
     icons: List[str] = Field(default_factory=list)
     actions: List[str] = Field(default_factory=list)
     why: Optional[str] = None
+    sources: List[ChecklistSource] = Field(default_factory=list)  # References per item
 
 
 class ChecklistSection(BaseModel):
@@ -40,11 +59,6 @@ class ChecklistSection(BaseModel):
 class ChecklistNote(BaseModel):
     type: str  # pregnancy, infant, general
     text: str
-
-
-class ChecklistSource(BaseModel):
-    label: str
-    url: Optional[str] = None
 
 
 class ChecklistResponse(BaseModel):
@@ -68,6 +82,7 @@ class ChatRequest(BaseModel):
     messages: List[dict]
     context: dict
     checklist: dict
+    sources: List[dict] = Field(default_factory=list)  # Sources from checklist items
 
 
 class ChatResponse(BaseModel):
@@ -75,10 +90,34 @@ class ChatResponse(BaseModel):
     sources: List[ChecklistSource] = Field(default_factory=list)
 
 
+def _generate_context_hash(context: dict) -> str:
+    """Generate SHA256 hash of context for caching"""
+    context_str = json.dumps(context, sort_keys=True)
+    return hashlib.sha256(context_str.encode()).hexdigest()
+
+
+def _is_cache_valid(timestamp: float) -> bool:
+    """Check if cache entry is still valid based on TTL"""
+    return (time.time() - timestamp) < CACHE_TTL
+
+
+def _clean_expired_cache():
+    """Remove expired entries from cache"""
+    current_time = time.time()
+    expired_keys = [
+        key for key, value in _checklist_cache.items()
+        if (current_time - value["ts"]) >= CACHE_TTL
+    ]
+    for key in expired_keys:
+        del _checklist_cache[key]
+    if expired_keys:
+        logger.info(f"Cleaned {len(expired_keys)} expired cache entries")
+
+
 def _rule_based_checklist(payload: SanitationRequest) -> List[ChecklistItem]:
     mode = payload.mode
     place = payload.place
-    flags = payload.flags
+    flags = payload.profile
 
     items: List[ChecklistItem] = []
 
@@ -132,9 +171,7 @@ def _generate_llm_checklist(payload: SanitationRequest) -> ChecklistResponse:
             "place": payload.place,
             "profile": {
                 "pregnant": payload.profile.pregnant,
-                "postpartum": payload.profile.postpartum,
-                "infant": payload.profile.infant,
-                "immunocompromised": payload.profile.immunocompromised
+                "infant": payload.profile.infant
             },
             "issues": payload.issues
         }
@@ -143,9 +180,10 @@ def _generate_llm_checklist(payload: SanitationRequest) -> ChecklistResponse:
             "You are a public-health copywriter. Write at grade-6 reading level. Use short sentences. "
             "Avoid jargon. Prefer friendly verbs. Add 'why' in one short line. Respect pregnancy/postpartum & infant safety. "
             "If advice varies by location, keep it general and ask the user to check local guidance. Never invent laws. "
+            "IMPORTANT: Each checklist item MUST include relevant source references from WHO, CDC, or local health authorities. "
             "Return valid JSON matching this exact schema: "
-            '{"summary_top3": [{"title":"string","why":"string","priority":"critical|high|medium|low","badges":["string"]}], '
-            '"sections": [{"name":"string","items":[{"id":"string","title":"string","body":"string","icons":["emoji"],"actions":["string"],"priority":"string"}]}], '
+            '{"summary_top3": [{"title":"string","why":"string","priority":"critical|high|medium|low","badges":["string"],"sources":[{"label":"string","url":"string"}]}], '
+            '"sections": [{"name":"string","items":[{"id":"string","title":"string","body":"string","icons":["emoji"],"actions":["string"],"priority":"string","sources":[{"label":"string","url":"string"}]}]}], '
             '"notes": [{"type":"pregnancy|infant|general","text":"string"}], '
             '"sources": [{"label":"string","url":"string"}]}'
         )
@@ -154,7 +192,9 @@ def _generate_llm_checklist(payload: SanitationRequest) -> ChecklistResponse:
             f"Generate a sanitation checklist tailored to this context: {context}. "
             "Prioritise top 3 urgent actions. Structure as the JSON schema provided. "
             "Add pregnancy- and infant-specific notes when flags are true. Keep each item ≤ 18 words. "
-            "Use calm, supportive tone."
+            "Use calm, supportive tone. "
+            "CRITICAL: Include authoritative sources (WHO, CDC, local health) for each checklist item. "
+            "Use real URLs like https://www.who.int/health-topics/water-sanitation-and-hygiene-wash or https://www.cdc.gov/hygiene/index.html"
         )
 
         resp = client.chat.completions.create(
@@ -188,7 +228,7 @@ def _fallback_checklist_response(payload: SanitationRequest) -> ChecklistRespons
     items = []
     
     # Add pregnancy-specific items
-    if payload.profile.pregnant or payload.profile.postpartum:
+    if payload.profile.pregnant:
         items.append(ChecklistItem(
             id="preg-pads",
             title="Use pads or liners only",
@@ -196,7 +236,11 @@ def _fallback_checklist_response(payload: SanitationRequest) -> ChecklistRespons
             priority="critical",
             badges=["Pregnancy Safe"],
             icons=["🤱"],
-            why="Reduces infection risk during pregnancy and recovery"
+            why="Reduces infection risk during pregnancy",
+            sources=[
+                ChecklistSource(label="WHO", url="https://www.who.int/health-topics/water-sanitation-and-hygiene-wash"),
+                ChecklistSource(label="CDC", url="https://www.cdc.gov/hygiene/index.html")
+            ]
         ))
     
     # Add infant-specific items
@@ -208,7 +252,11 @@ def _fallback_checklist_response(payload: SanitationRequest) -> ChecklistRespons
             priority="critical",
             badges=["Infant Priority"],
             icons=["👶", "🧼"],
-            why="Infants are more vulnerable to infections"
+            why="Infants are more vulnerable to infections",
+            sources=[
+                ChecklistSource(label="WHO", url="https://www.who.int/health-topics/water-sanitation-and-hygiene-wash"),
+                ChecklistSource(label="CDC", url="https://www.cdc.gov/hygiene/index.html")
+            ]
         ))
     
     # Add general items based on mode
@@ -219,7 +267,10 @@ def _fallback_checklist_response(payload: SanitationRequest) -> ChecklistRespons
             body="Line bucket, add absorbent layer, keep separate",
             priority="high",
             icons=["🪣", "🧻"],
-            why="Prevents overflow and reduces odour"
+            why="Prevents overflow and reduces odour",
+            sources=[
+                ChecklistSource(label="WHO", url="https://www.who.int/health-topics/water-sanitation-and-hygiene-wash")
+            ]
         ))
     
     return ChecklistResponse(
@@ -235,11 +286,62 @@ def _fallback_checklist_response(payload: SanitationRequest) -> ChecklistRespons
 
 
 @router.post("/checklist", response_model=ChecklistResponse)
-async def generate_checklist(payload: SanitationRequest):
-    """Generate structured checklist with LLM"""
+async def generate_checklist(
+    payload: SanitationRequest,
+    force: bool = Query(False, description="Force fresh LLM call, bypass cache")
+):
+    """Generate structured checklist with LLM and caching"""
     try:
-        return _generate_llm_checklist(payload)
+        # Build context for hashing
+        context = {
+            "mode": payload.mode,
+            "place": payload.place,
+            "profile": {
+                "pregnant": payload.profile.pregnant,
+                "infant": payload.profile.infant
+            },
+            "issues": payload.issues
+        }
+        
+        # Generate context hash
+        context_hash = _generate_context_hash(context)
+        
+        # Clean expired cache entries
+        _clean_expired_cache()
+        
+        # Check cache first (unless force=true)
+        cache_hit = False
+        llm_call = False
+        
+        if not force and context_hash in _checklist_cache:
+            cached_entry = _checklist_cache[context_hash]
+            if _is_cache_valid(cached_entry["ts"]):
+                cache_hit = True
+                logger.info(f"Cache hit for hash: {context_hash[:8]}...")
+                return cached_entry["data"]
+            else:
+                # Remove expired entry
+                del _checklist_cache[context_hash]
+                logger.info(f"Removed expired cache entry for hash: {context_hash[:8]}...")
+        
+        # Generate fresh response
+        llm_call = True
+        logger.info(f"LLM call for hash: {context_hash[:8]}... (force={force}, cache_hit={cache_hit})")
+        
+        response = _generate_llm_checklist(payload)
+        
+        # Store in cache
+        _checklist_cache[context_hash] = {
+            "data": response,
+            "ts": time.time()
+        }
+        
+        logger.info(f"Stored response in cache for hash: {context_hash[:8]}... (llm_call={llm_call}, cache_hit={cache_hit})")
+        
+        return response
+        
     except Exception as e:
+        logger.error(f"Error generating checklist: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -304,12 +406,24 @@ async def chat_with_assistant(payload: ChatRequest):
         if payload.context.get('profile', {}).get('infant'):
             context_summary += "User has an infant. "
         
+        # Build available sources context
+        available_sources = []
+        if payload.sources:
+            available_sources = [ChecklistSource(**source) for source in payload.sources]
+        
+        sources_context = ""
+        if available_sources:
+            sources_list = ", ".join([f"{source.label} ({source.url})" for source in available_sources])
+            sources_context = f" Available authoritative sources: {sources_list}."
+        
         system_prompt = (
             f"You are a calm hygiene helper. Use this context: {context_summary} "
             "Keep replies short, grade-6 reading level. Offer step-by-step only when asked. "
             "Include a 'why' line if helpful. If unsure or guidance depends on local policy, say so. "
             "Avoid medical diagnosis; encourage contacting health services for concerning symptoms. "
             "Stay focused on hygiene and sanitation topics."
+            f"{sources_context} "
+            "When providing information, cite relevant sources from the available list when appropriate."
         )
         
         # Add context to messages
@@ -323,10 +437,8 @@ async def chat_with_assistant(payload: ChatRequest):
         
         message = resp.choices[0].message.content.strip()
         
-        # Extract sources from checklist if available
-        sources = []
-        if payload.checklist and 'sources' in payload.checklist:
-            sources = [ChecklistSource(**source) for source in payload.checklist['sources']]
+        # Use sources from request (collected from checklist items)
+        sources = available_sources if available_sources else []
         
         return ChatResponse(message=message, sources=sources)
         
