@@ -250,6 +250,21 @@ watch(
             <RouterLink
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
+              :to="{ name: 'sanitation-support' }"
+              @click="closeMobileMenu"
+            >
+              <i
+                class="material-icons opacity-6 me-2 text-md"
+                :class="getTextColor()"
+                >sanitizer</i
+              >
+              Sanitation Support
+            </RouterLink>
+          </li>
+          <li class="nav-item mx-2">
+            <RouterLink
+              class="nav-link ps-2 d-flex cursor-pointer align-items-center"
+              :class="getTextColor()"
               :to="{ name: 'water-safety-companion' }"
               @click="closeMobileMenu"
             >

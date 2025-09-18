@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.water_sources import router as water_sources_router
 from api.water_quality_prediction import router as prediction_router
+from api.guidance import router as guidance_router
 
 app = FastAPI(title="WaterSafe API", version="1.0.0")
 
@@ -26,6 +27,7 @@ app.add_middleware(
 # Add API routes
 app.include_router(water_sources_router)
 app.include_router(prediction_router, prefix="/api/prediction", tags=["prediction"])
+app.include_router(guidance_router)
 
 @app.get("/")
 async def root():

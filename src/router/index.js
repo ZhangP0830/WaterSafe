@@ -4,6 +4,7 @@ import WaterSafetyHubView from "../views/WaterSafetyHubView.vue";
 import TrustedAlternativesView from "../views/TrustedAlternativesView.vue";
 import VoiceAssistantView from "../views/VoiceAssistantView.vue";
 import WaterQualityPredictionView from "../views/WaterQualityPredictionView.vue";
+import SanitationSupportView from "../views/SanitationSupportView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: "/water-quality-prediction",
       name: "water-quality-prediction",
       component: WaterQualityPredictionView,
+    },
+    {
+      path: "/sanitation-support",
+      name: "sanitation-support",
+      component: SanitationSupportView,
     },
   ],
 });
