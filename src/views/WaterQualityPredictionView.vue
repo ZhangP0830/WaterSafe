@@ -7,7 +7,7 @@ import DefaultFooter from "../components/layout/FooterDefault.vue";
 import Header from "../components/layout/Header.vue";
 
 // Background image
-import heroBg from "@/assets/img/trusted-background.png";
+import heroBg from "@/assets/img/predict-backend.png";
 
 // Page lifecycle
 const body = document.getElementsByTagName("body")[0];
@@ -39,8 +39,7 @@ const showSuggestions = ref(false);
 const selectedSuggestionIndex = ref(-1);
 
 // API base URL - Auto-detect environment
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 
-  (import.meta.env.DEV ? 'http://localhost:8000' : '/api');
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:8000/api' : '/api';
 
 // Load available suburbs for autocomplete
 const loadAvailableSuburbs = async () => {
@@ -205,7 +204,7 @@ const searchSuburbAndPredict = async () => {
   errorMessage.value = "";
   
   try {
-    // First, search for sites in the suburb
+    // Use this for deployment
     const response = await fetch(`${API_BASE_URL}/prediction/search-by-suburb`, {
       method: 'POST',
       headers: {
@@ -406,7 +405,7 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
             Water Quality Prediction
           </h1>
             <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Advanced AI-powered water quality forecasting system providing real-time predictions, safety ratings, and personalized guidance for different population groups
+              Advanced model-based water quality forecasting system providing predictions, safety ratings, and personalized guidance
             </p>
           </div>
         </div>
@@ -429,7 +428,7 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
                       Water Quality Prediction
                     </h4>
                     <p class="text-muted mb-3">
-                      Our prediction system uses machine learning models trained on historical water quality data to forecast water safety conditions for monitoring sites. Simply enter a suburb name below to get instant water quality predictions including safety ratings, parameter forecasts, and personalized guidance for different population groups.
+                      This tool predicts water quality safety for your area. Simply enter your suburb name in the search box below and click "Search". The system will automatically find the nearest monitoring site and provide instant water quality predictions, safety ratings, and personalized guidance for pregnant women, infants, and elderly populations.
                     </p>
                   </div>
                 </div>
@@ -631,9 +630,6 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
                           <p class="mb-2 text-muted small">
                             {{ getParameterDescription(paramName) }}
                           </p>
-                          <span class="badge bg-info badge-sm">
-                            Predicted
-                          </span>
                         </div>
                       </div>
                     </div>

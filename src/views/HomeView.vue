@@ -8,6 +8,7 @@ import Header from "../components/layout/Header.vue";
 import FilledInfoCard from "../components/cards/infoCards/FilledInfoCard.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
 import HomeInformation from "../components/HomeSection/HomeInformation.vue";
+import HomeIntroduction from "../components/HomeSection/HomeIntroduction.vue";
 // 导入图片资源
 import heroBg from "@/assets/img/homebackground.png";
 
@@ -72,6 +73,7 @@ const scrollToLearnMore = () => {
     <!-- main content section -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
     <!-- here you can add your content -->
+     <HomeIntroduction />
      <HomeInformation />
      
      <!-- Sanitation Support Feature Section -->
