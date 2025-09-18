@@ -56,6 +56,29 @@ onUnmounted(() => {
 
   <!-- Main -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
+    <!-- Page Introduction -->
+    <div class="container mb-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-12">
+                  <h4 class="mb-3">
+                    <i class="material-icons me-2 text-info">info</i>
+                    Water Safety Awareness Hub
+                  </h4>
+                  <p class="text-muted mb-3">
+                    This hub provides comprehensive water safety information and procedures. Browse through different contamination stages using the navigation tabs below. Each section contains detailed guidance on signs to watch for, safety measures to take, and recovery procedures to follow. Click on any tab to access specific information for that contamination level.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Content -->
     <AwarenessNavTab />
   </div>

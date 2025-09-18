@@ -36,6 +36,188 @@
     <!-- Main content -->
     <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
       <div class="container">
+        <!-- Page Introduction -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card shadow-sm border-0">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-12">
+                    <h4 class="mb-3">
+                      <i class="material-icons me-2 text-info">water_drop</i>
+                      Trusted Alternatives Finder
+                    </h4>
+                    <p class="text-muted mb-3">
+                      This tool helps you find safe water sources during emergencies. First, set your location using "Get My Location" or enter an address manually. Then adjust the search radius and click "Search for Water Sources" to find nearby operational water sources with real-time status, distances, and driving directions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Control Panel -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">
+                  <i class="material-icons me-2">my_location</i>
+                  Current Location
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <!-- Current Location Display -->
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <i class="material-icons text-success me-2">location_on</i>
+                      <div>
+                        <div v-if="userLocation" class="fw-bold text-dark">
+                          Current Position: {{ userLocation.lat.toFixed(4) }}, {{ userLocation.lng.toFixed(4) }}
+                        </div>
+                        <div v-else class="text-muted">
+                          Location not detected
+                        </div>
+                        <small class="text-muted">
+                          {{ userLocation ? 'GPS coordinates detected' : 'Click "Get My Location" to enable' }}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Location Controls -->
+                  <div class="col-md-6">
+                    <div class="d-flex gap-2 flex-wrap">
+                      <button 
+                        @click="getUserLocation" 
+                        class="btn btn-outline-primary btn-sm"
+                        :disabled="locationLoading"
+                      >
+                        <i class="material-icons me-1" style="font-size: 1rem;">
+                          {{ locationLoading ? 'sync' : 'my_location' }}
+                        </i>
+                        {{ locationLoading ? 'Detecting...' : 'Get My Location' }}
+                      </button>
+                      
+                      <button 
+                        @click="openLocationModal" 
+                        class="btn btn-outline-secondary btn-sm"
+                      >
+                        <i class="material-icons me-1" style="font-size: 1rem;">edit_location</i>
+                        Change Location
+                      </button>
+                      
+                      <button 
+                        @click="clearLocation" 
+                        class="btn btn-outline-danger btn-sm"
+                        v-if="userLocation"
+                      >
+                        <i class="material-icons me-1" style="font-size: 1rem;">clear</i>
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manual Location Modal -->
+        <div v-if="showManualLocationModal" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  <i class="material-icons me-2">edit_location</i>
+                  Set Manual Location
+                </h5>
+                <button type="button" class="btn-close" @click="showManualLocationModal = false"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="addressInput" class="form-label">Enter Location</label>
+                  <div class="input-group">
+                    <input 
+                      type="text" 
+                      id="addressInput" 
+                      class="form-control" 
+                      v-model="addressInput"
+                      placeholder="e.g., Melbourne CBD, Australia"
+                      @keyup.enter="searchAddress"
+                    >
+                    <button 
+                      class="btn btn-outline-primary" 
+                      type="button" 
+                      @click="searchAddress"
+                      :disabled="!addressInput.trim() || addressLoading"
+                    >
+                      <i class="material-icons me-1" style="font-size: 1rem;">
+                        {{ addressLoading ? 'sync' : 'search' }}
+                      </i>
+                      {{ addressLoading ? 'Searching...' : 'Search' }}
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Search Results -->
+                <div v-if="addressResults.length > 0" class="mb-3">
+                  <label class="form-label">Select Location:</label>
+                  <div class="list-group" style="max-height: 200px; overflow-y: auto;">
+                    <button
+                      v-for="(result, index) in addressResults"
+                      :key="index"
+                      type="button"
+                      class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                      @click="selectAddress(result)"
+                    >
+                      <div>
+                        <div class="fw-bold">{{ result.name }}</div>
+                        <small class="text-muted">{{ result.formatted_address }}</small>
+                      </div>
+                      <i class="material-icons text-primary">arrow_forward_ios</i>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Selected Location Display -->
+                <div v-if="selectedAddress" class="mb-3">
+                  <div class="alert alert-success">
+                    <i class="material-icons me-2">location_on</i>
+                    <strong>Selected:</strong> {{ selectedAddress.name }}
+                    <br>
+                    <small>{{ selectedAddress.formatted_address }}</small>
+                  </div>
+                </div>
+                
+                <div class="alert alert-info">
+                  <i class="material-icons me-2">info</i>
+                  <small>
+                    Enter a location name, address, or landmark to search for coordinates. 
+                    Examples: "Melbourne CBD", "Sydney Opera House", "123 Collins Street Melbourne"
+                  </small>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="showManualLocationModal = false">
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-primary" 
+                  @click="setSelectedLocation"
+                  :disabled="!selectedAddress"
+                >
+                  <i class="material-icons me-1">check</i>
+                  Set Location
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Search control panel -->
         <div class="row mb-4">
           <div class="col-12">
@@ -75,19 +257,8 @@
           </div>
         </div>
 
-        <!-- Map -->
-        <div class="row">
-          <div class="col-12">
-            <div class="card shadow-sm">
-              <div class="card-body p-0">
-                <div id="map" style="height: 600px; width: 100%;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
         <!-- Map Legend -->
-        <div class="row mt-3">
+        <div class="row mb-3">
           <div class="col-12">
             <div class="card shadow-sm">
               <div class="card-body py-3">
@@ -143,6 +314,18 @@
             </div>
           </div>
         </div>
+
+        <!-- Map -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-body p-0">
+                <div id="map" style="height: 600px; width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
 
         <!-- Search result list -->
         <div class="row mt-4">
@@ -276,6 +459,14 @@ const loading = ref(false);
 const error = ref(null);
 const displayedCount = ref(6);
 
+// Location control panel data
+const locationLoading = ref(false);
+const showManualLocationModal = ref(false);
+const addressInput = ref('');
+const addressLoading = ref(false);
+const addressResults = ref([]);
+const selectedAddress = ref(null);
+
 // API base URL - Auto-detect environment
 const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 
   (import.meta.env.DEV ? 'http://localhost:8000' : '/api');
@@ -287,10 +478,10 @@ const fetchWaterSources = async () => {
   
   try {
     // Use this for deployment
-    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     
     // Use this for local development
-    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -564,6 +755,9 @@ const getMarkerIcon = (status) => {
 const addUserLocationMarker = () => {
   if (!map.value || !userLocation.value) return;
 
+  // Remove existing user location marker first
+  removeUserLocationMarker();
+
   const userMarker = new google.maps.Marker({
     position: { lat: userLocation.value.lat, lng: userLocation.value.lng },
     map: map.value,
@@ -579,7 +773,18 @@ const addUserLocationMarker = () => {
     }
   });
 
-  markers.value.push(userMarker);
+  // Store user marker separately to avoid conflicts with water source markers
+  if (!window.userLocationMarker) {
+    window.userLocationMarker = userMarker;
+  }
+};
+
+// Remove user location marker
+const removeUserLocationMarker = () => {
+  if (window.userLocationMarker) {
+    window.userLocationMarker.setMap(null);
+    window.userLocationMarker = null;
+  }
 };
 
 
@@ -629,6 +834,7 @@ const filterMapMarkers = () => {
 // Get user location
 const getUserLocation = () => {
   if (navigator.geolocation) {
+    locationLoading.value = true;
     navigator.geolocation.getCurrentPosition(
       (position) => {
         userLocation.value = {
@@ -642,12 +848,110 @@ const getUserLocation = () => {
           map.value.setCenter({ lat: userLocation.value.lat, lng: userLocation.value.lng });
           addUserLocationMarker();
         }
+        
+        locationLoading.value = false;
       },
       (error) => {
         console.error('Error getting location:', error);
+        locationLoading.value = false;
+        alert('Unable to get your location. Please try setting it manually.');
       }
     );
+  } else {
+    alert('Geolocation is not supported by this browser.');
   }
+};
+
+// Open location modal and reset state
+const openLocationModal = () => {
+  showManualLocationModal.value = true;
+  addressInput.value = '';
+  addressResults.value = [];
+  selectedAddress.value = null;
+};
+
+// Search address using Google Places API
+const searchAddress = async () => {
+  if (!addressInput.value.trim()) return;
+  
+  addressLoading.value = true;
+  addressResults.value = [];
+  
+  try {
+    // Create a temporary input element for Google Places Autocomplete
+    const input = document.createElement('input');
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['establishment', 'geocode']
+    });
+    
+    // Use Google Places API to search
+    const service = new google.maps.places.PlacesService(document.createElement('div'));
+    
+    const request = {
+      query: addressInput.value,
+      fields: ['name', 'formatted_address', 'geometry']
+    };
+    
+    service.textSearch(request, (results, status) => {
+      addressLoading.value = false;
+      
+      if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        addressResults.value = results.slice(0, 5).map(place => ({
+          name: place.name,
+          formatted_address: place.formatted_address,
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng()
+        }));
+      } else {
+        addressResults.value = [];
+        console.error('Places API error:', status);
+      }
+    });
+    
+  } catch (error) {
+    addressLoading.value = false;
+    console.error('Address search error:', error);
+    alert('Unable to search for addresses. Please try again.');
+  }
+};
+
+// Select an address from search results
+const selectAddress = (address) => {
+  selectedAddress.value = address;
+};
+
+// Set the selected location
+const setSelectedLocation = () => {
+  if (!selectedAddress.value) return;
+  
+  userLocation.value = {
+    lat: selectedAddress.value.lat,
+    lng: selectedAddress.value.lng
+  };
+  
+  // Reset modal state
+  showManualLocationModal.value = false;
+  addressInput.value = '';
+  addressResults.value = [];
+  selectedAddress.value = null;
+  
+  console.log('Selected location set:', userLocation.value);
+  
+  // Update map if loaded
+  if (map.value) {
+    map.value.setCenter({ lat: userLocation.value.lat, lng: userLocation.value.lng });
+    addUserLocationMarker();
+  }
+};
+
+// Clear location
+const clearLocation = () => {
+  userLocation.value = null;
+  
+  // Remove user location marker from map
+  removeUserLocationMarker();
+  
+  console.log('Location cleared');
 };
 
 // Watch filter changes
@@ -686,5 +990,63 @@ onMounted(async () => {
 
 :deep(.gm-style) {
   border-radius: 0.5rem;
+}
+
+/* Button hover effects */
+.btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary:hover {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.btn-outline-primary:hover .material-icons {
+  color: white;
+}
+
+/* Specific button animations */
+.btn-outline-primary {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-outline-primary:hover::before {
+  left: 100%;
+}
+
+/* Button icon hover effects */
+.btn .material-icons {
+  transition: transform 0.3s ease;
+}
+
+.btn:hover .material-icons {
+  transform: scale(1.1);
+}
+
+/* All buttons unified styling - same as Directions button */
+.btn-outline-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
 }
 </style>

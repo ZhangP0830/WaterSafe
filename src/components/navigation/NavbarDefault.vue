@@ -205,15 +205,15 @@ watch(
             <RouterLink
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
-              :to="{ name: 'water-safety-hub' }"
+              :to="{ name: 'water-quality-prediction' }"
               @click="closeMobileMenu"
             >
               <i
                 class="material-icons opacity-6 me-2 text-md"
                 :class="getTextColor()"
-                >water_drop</i
+                >analytics</i
               >
-              Water Safety Hub
+              Water Quality Prediction
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -235,15 +235,15 @@ watch(
             <RouterLink
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
-              :to="{ name: 'water-quality-prediction' }"
+              :to="{ name: 'water-safety-hub' }"
               @click="closeMobileMenu"
             >
               <i
                 class="material-icons opacity-6 me-2 text-md"
                 :class="getTextColor()"
-                >analytics</i
+                >water_drop</i
               >
-              Water Quality Prediction
+              Water Safety Hub
             </RouterLink>
           </li>
           <li class="nav-item mx-2">

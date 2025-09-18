@@ -149,6 +149,29 @@ const usageSteps = [
 
   <!-- main content section -->
   <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
+    <!-- Page Introduction -->
+    <div class="container mb-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-12">
+                  <h4 class="mb-3">
+                    <i class="material-icons me-2 text-info">mic</i>
+                    Water Safety Companion
+                  </h4>
+                  <p class="text-muted mb-3">
+                    This AI assistant provides instant water safety guidance through voice conversation. Click the microphone button to start speaking, or type your questions in the chat box. Ask about water quality, contamination signs, safety measures, or emergency procedures. The assistant will provide expert advice and step-by-step guidance for your specific situation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- features section -->
     <section class="py-5" id="features">
       <div class="container">

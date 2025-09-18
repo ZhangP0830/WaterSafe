@@ -1,44 +1,61 @@
 <template>
-  <div class="sanitation-support">
-    <!-- Breadcrumb Navigation -->
-    <div class="breadcrumb-section">
-      <div class="container">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <router-link to="/" class="breadcrumb-link">
-                <i class="fas fa-home me-1"></i>Home
-              </router-link>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">
-              <i class="fas fa-shield-alt me-1"></i>Sanitation Support
-            </li>
-          </ol>
-        </nav>
+  <!-- Navigation bar -->
+  <div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <NavbarDefault :sticky="true" />
       </div>
     </div>
-
-    <!-- Photo Hero Section -->
-    <div class="hero-section">
-      <div class="hero-background">
-        <div class="hero-overlay"></div>
-      </div>
-      <div class="hero-content">
-        <div class="container">
-          <div class="row">
-            <div class="col-12 text-center">
-              <h1 class="hero-title">
-                <i class="fas fa-shield-alt me-3"></i>
-                Safe Sanitation & Hygiene Support
-              </h1>
-              <p class="hero-subtitle">
-                Get <span class="highlight-text">personalized</span> guidance for your situation
-              </p>
-            </div>
+  </div>
+    
+  <!-- Page header -->
+  <Header>
+    <div
+      class="page-header min-vh-100"
+      :style="`background-image: url(${heroBg})`"
+      loading="lazy"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h1
+              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
+              :style="{ display: 'inline-block' }"
+            >
+              Safe Sanitation & Hygiene Support
+            </h1>
+            <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
+              Get personalized guidance for your specific situation during water advisories
+            </p>
           </div>
         </div>
       </div>
     </div>
+  </Header>
+
+  <!-- Main content -->
+  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
+    <div class="container">
+      <!-- Page Introduction -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-12">
+                  <h4 class="mb-3">
+                    <i class="material-icons me-2 text-info">shield</i>
+                    Safe Sanitation & Hygiene Support
+                  </h4>
+                  <p class="text-muted mb-3">
+                    This tool provides step-by-step guidance for sanitation and hygiene during water emergencies. Simply follow the 3-step process below: First, choose your situation (General/Emergency mode), then select your location type, and finally specify your needs. The system will generate a personalized checklist and safety instructions tailored to your circumstances.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- Progress Indicator -->
     <div class="progress-section">
@@ -661,16 +678,17 @@
       </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div v-if="showToast" class="toast-container">
-      <div class="toast" :class="'toast-' + toastType" role="alert" aria-live="polite">
-        <div class="toast-header">
-          <i :class="getToastIcon()" class="me-2"></i>
-          <strong class="me-auto">{{ getToastTitle() }}</strong>
-          <button type="button" class="btn-close" @click="hideToast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-          {{ toastMessage }}
+      <!-- Toast Notification -->
+      <div v-if="showToast" class="toast-container">
+        <div class="toast" :class="'toast-' + toastType" role="alert" aria-live="polite">
+          <div class="toast-header">
+            <i :class="getToastIcon()" class="me-2"></i>
+            <strong class="me-auto">{{ getToastTitle() }}</strong>
+            <button type="button" class="btn-close" @click="hideToast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body">
+            {{ toastMessage }}
+          </div>
         </div>
       </div>
     </div>
@@ -678,10 +696,21 @@
 </template>
 
 <script>
+import NavbarDefault from "../components/navigation/NavbarDefault.vue";
+import Header from "../components/layout/Header.vue";
+
+// Background image
+import heroBg from "@/assets/img/Sanitation-backend.jpg";
+
 export default {
   name: "SanitationSupportView",
+  components: {
+    NavbarDefault,
+    Header
+  },
   data() {
     return {
+      heroBg,
       // Step management
       currentStep: 1,
       
