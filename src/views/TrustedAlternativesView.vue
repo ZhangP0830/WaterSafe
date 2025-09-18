@@ -75,13 +75,13 @@
                       <i class="material-icons text-success me-2">location_on</i>
                       <div>
                         <div v-if="userLocation" class="fw-bold text-dark">
-                          Current Position: {{ userLocation.lat.toFixed(4) }}, {{ userLocation.lng.toFixed(4) }}
+                          Location Selected
                         </div>
                         <div v-else class="text-muted">
-                          Location not detected
+                          Location not selected
                         </div>
                         <small class="text-muted">
-                          {{ userLocation ? 'GPS coordinates detected' : 'Click "Get My Location" to enable' }}
+                          {{ userLocation ? 'GPS location detected' : 'Click "Get My Location" to set your position' }}
                         </small>
                       </div>
                     </div>
@@ -478,10 +478,10 @@ const fetchWaterSources = async () => {
   
   try {
     // Use this for deployment
-    // const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
+    const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
     
     // Use this for local development
-    const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
+    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
