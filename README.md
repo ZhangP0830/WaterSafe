@@ -162,7 +162,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Amrit Jain** - *Cyber security & Quality Assurance*
 - **Bohan Zhou** - *Data Scientist* 
 - **Haohao Tang** - *Data Scientist* 
-- **Jianyao Qian** - * Business analyst* 
+- **Jianyao Qian** - *Business analyst* 
 
 ### Special Thanks
 - **Monash University** - Academic supervision and guidance
