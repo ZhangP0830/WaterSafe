@@ -67,11 +67,11 @@ def load_site_data():
         # Format site_id to match model parameters format
         df['Site ID'] = df['site_id'].apply(lambda x: f' "{x}' if not pd.isna(x) else x)
         
-        print(f"✅ Database data loaded: {len(df)} records from {df['site_id'].nunique()} sites")
+        print(f"Database data loaded: {len(df)} records from {df['site_id'].nunique()} sites")
         return df
         
     except Exception as e:
-        print(f"❌ Database query failed: {e}")
+        print(f"Database query failed: {e}")
         raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
 
 # Get site-specific data from database (optimized query)
@@ -110,7 +110,7 @@ def get_site_data(site_id: str):
         return df
         
     except Exception as e:
-        print(f"❌ Site-specific database query failed: {e}")
+        print(f"Site-specific database query failed: {e}")
         return None
 
 # Get available site IDs from database
@@ -121,7 +121,7 @@ def get_available_sites():
         df = pd.read_sql(query, engine)
         return df['site_id'].tolist()
     except Exception as e:
-        print(f"❌ Failed to get available sites: {e}")
+        print(f"Failed to get available sites: {e}")
         return []
 
 # Search sites by suburb name
@@ -146,7 +146,7 @@ def search_sites_by_suburb(suburb_name: str):
         return df.to_dict('records')
         
     except Exception as e:
-        print(f"❌ Failed to search sites by suburb: {e}")
+        print(f"Failed to search sites by suburb: {e}")
         return []
 
 # Get available suburbs
@@ -163,7 +163,7 @@ def get_available_suburbs():
         df = pd.read_sql(query, engine)
         return df.to_dict('records')
     except Exception as e:
-        print(f"❌ Failed to get available suburbs: {e}")
+        print(f"Failed to get available suburbs: {e}")
         return []
 
 # WQI calculation parameters
