@@ -1,6 +1,6 @@
 <template>
   <!-- Navigation bar -->
-  <div class="container position-sticky z-index-sticky top-0">
+  <div class="container position-sticky z-index-sticky top-0 navbar-container">
     <div class="row">
       <div class="col-12">
         <NavbarDefault :sticky="true" />
@@ -8,54 +8,24 @@
     </div>
   </div>
     
-  <!-- Page header -->
-  <Header>
-    <div
-      class="page-header min-vh-100"
-      :style="`background-image: url(${heroBg})`"
-      loading="lazy"
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto text-center">
-            <h1
-              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
-              :style="{ display: 'inline-block' }"
-            >
+  <!-- Main content -->
+  <div class="container-fluid px-4 mt-6 pt-5 main-content">
+    <!-- Page Introduction -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-3 text-center">
+              <i class="material-icons me-2 text-info">shield</i>
               Safe Sanitation & Hygiene Support
-            </h1>
-            <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Get personalized guidance for your specific situation during water advisories
+            </h4>
+            <p class="text-muted mb-3 text-center">
+              This tool provides step-by-step guidance for sanitation and hygiene during water emergencies. Simply follow the 3-step process below: First, choose your situation (General/Emergency mode), then select your location type, and finally specify your needs. The system will generate a personalized checklist and safety instructions tailored to your circumstances.
             </p>
           </div>
         </div>
       </div>
     </div>
-  </Header>
-
-  <!-- Main content -->
-  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-    <div class="container">
-      <!-- Page Introduction -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card shadow-sm border-0">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-12">
-                  <h4 class="mb-3">
-                    <i class="material-icons me-2 text-info">shield</i>
-                    Safe Sanitation & Hygiene Support
-                  </h4>
-                  <p class="text-muted mb-3">
-                    This tool provides step-by-step guidance for sanitation and hygiene during water emergencies. Simply follow the 3-step process below: First, choose your situation (General/Emergency mode), then select your location type, and finally specify your needs. The system will generate a personalized checklist and safety instructions tailored to your circumstances.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
     <!-- Progress Indicator -->
     <div class="progress-section">
@@ -692,25 +662,18 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
-import Header from "../components/layout/Header.vue";
-
-// Background image
-import heroBg from "@/assets/img/Sanitation-backend.jpg";
 
 export default {
   name: "SanitationSupportView",
   components: {
-    NavbarDefault,
-    Header
+    NavbarDefault
   },
   data() {
     return {
-      heroBg,
       // Step management
       currentStep: 1,
       
@@ -1317,6 +1280,16 @@ export default {
 </script>
 
 <style scoped>
+/* Ensure proper spacing between navigation and content */
+.navbar-container {
+  margin-bottom: 3rem;
+}
+
+.main-content {
+  margin-top: 4rem;
+  padding-top: 2rem;
+}
+
 /* Main Layout */
 .sanitation-support {
   min-height: 100vh;

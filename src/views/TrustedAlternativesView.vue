@@ -1,6 +1,6 @@
 <template>
   <!-- Navigation bar -->
-  <div class="container position-sticky z-index-sticky top-0">
+  <div class="container position-sticky z-index-sticky top-0 navbar-container">
     <div class="row">
       <div class="col-12">
         <NavbarDefault :sticky="true" />
@@ -8,34 +8,8 @@
     </div>
   </div>
     
-    <!-- Page header -->
-    <Header>
-      <div
-      class="page-header min-vh-100"
-      :style="`background-image: url(${heroBg})`"
-      loading="lazy"
-    >
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-              <h1
-              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
-              :style="{ display: 'inline-block' }"
-            >
-              Trusted Alternatives Finder
-            </h1>
-              <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-                Find safe drinking water sources near you during water advisories
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Header>
-
-    <!-- Main content -->
-    <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-      <div class="container">
+  <!-- Main content -->
+  <div class="container-fluid px-4 mt-6 pt-5 main-content">
         <!-- Page Introduction -->
         <div class="row mb-4">
           <div class="col-12">
@@ -433,7 +407,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <!-- Footer -->
     <DefaultFooter />
@@ -443,9 +416,7 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
-import Header from "../components/layout/Header.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
-import heroBg from "@/assets/img/trusted-background.png";
 
 // Reactive data
 const searchRadius = ref('all');
@@ -972,6 +943,16 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Ensure proper spacing between navigation and content */
+.navbar-container {
+  margin-bottom: 3rem;
+}
+
+.main-content {
+  margin-top: 4rem;
+  padding-top: 2rem;
+}
+
 .card {
   transition: transform 0.2s ease;
 }

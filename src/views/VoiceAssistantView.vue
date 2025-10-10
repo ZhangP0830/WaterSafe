@@ -4,11 +4,7 @@ import { onMounted, onUnmounted } from "vue";
 // import components
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
-import Header from "../components/layout/Header.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
-
-// import image resources
-import heroBg from "@/assets/img/ai-background.png";
 
 // page lifecycle
 const body = document.getElementsByTagName("body")[0];
@@ -101,7 +97,7 @@ const usageSteps = [
 
 <template>
   <!-- navbar -->
-  <div class="container position-sticky z-index-sticky top-0">
+  <div class="container position-sticky z-index-sticky top-0 navbar-container">
     <div class="row">
       <div class="col-12">
         <NavbarDefault :sticky="true" />
@@ -109,64 +105,20 @@ const usageSteps = [
     </div>
   </div>
 
-  <!-- hero section -->
-  <Header>
-    <div
-      class="page-header min-vh-100"
-      :style="`background-image: url(${heroBg})`"
-      loading="lazy"
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 text-center mx-auto position-relative">
-            <h1
-              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
-              :style="{ display: 'inline-block' }"
-            >
-              Water Safety Companion
-            </h1>
-            <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Get instant water safety guidance through our AI-powered companion. 
-              Ask questions, get expert advice, and stay informed about water quality in your area.
-            </p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-              <MaterialButton
-                variant="contained"
-                color="white"
-                size="lg"
-                class="mt-2"
-                @click="scrollToFeatures"
-              >
-                <i class="material-icons me-2">info</i>
-                Learn More
-              </MaterialButton>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Header>
-
   <!-- main content section -->
-  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
+  <div class="container-fluid px-4 mt-6 pt-5 main-content">
     <!-- Page Introduction -->
-    <div class="container mb-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card shadow-sm border-0">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-12">
-                  <h4 class="mb-3">
-                    <i class="material-icons me-2 text-info">mic</i>
-                    Water Safety Companion
-                  </h4>
-                  <p class="text-muted mb-3">
-                    This AI assistant provides instant water safety guidance through voice conversation. Click the microphone button to start speaking, or type your questions in the chat box. Ask about water quality, contamination signs, safety measures, or emergency procedures. The assistant will provide expert advice and step-by-step guidance for your specific situation.
-                  </p>
-                </div>
-              </div>
-            </div>
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-3 text-center">
+              <i class="material-icons me-2 text-info">mic</i>
+              Water Safety Companion
+            </h4>
+            <p class="text-muted mb-3 text-center">
+              This AI assistant provides instant water safety guidance through voice conversation. Click the microphone button to start speaking, or type your questions in the chat box. Ask about water quality, contamination signs, safety measures, or emergency procedures. The assistant will provide expert advice and step-by-step guidance for your specific situation.
+            </p>
           </div>
         </div>
       </div>
@@ -266,6 +218,16 @@ const usageSteps = [
 </template>
 
 <style scoped>
+/* Ensure proper spacing between navigation and content */
+.navbar-container {
+  margin-bottom: 3rem;
+}
+
+.main-content {
+  margin-top: 4rem;
+  padding-top: 2rem;
+}
+
 .bg-gray-100 {
   background-color: #f8f9fa !important;
 }

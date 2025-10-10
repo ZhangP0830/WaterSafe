@@ -4,10 +4,7 @@ import MaterialInput from "@/components/MaterialInput.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
 import DefaultFooter from "../components/layout/FooterDefault.vue";
-import Header from "../components/layout/Header.vue";
 
-// Background image
-import heroBg from "@/assets/img/predict-backend.png";
 
 // Page lifecycle
 const body = document.getElementsByTagName("body")[0];
@@ -44,7 +41,12 @@ const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:8000/api' : '/api';
 // Load available suburbs for autocomplete
 const loadAvailableSuburbs = async () => {
   try {
+    // Use this for deployment
     const response = await fetch(`${API_BASE_URL}/prediction/suburbs`);
+
+    // Use this for Local
+    // const response = await fetch(`http://localhost:8000/api/prediction/suburbs`);
+
     if (response.ok) {
       const data = await response.json();
       availableSuburbs.value = data.suburbs.map(suburb => suburb.nearest_suburb);
@@ -69,7 +71,8 @@ const filterSuburbs = () => {
     suburb.toLowerCase().includes(input.toLowerCase())
   ).slice(0, 8); // Limit to 8 suggestions
   
-  showSuggestions.value = filteredSuburbs.value.length > 0;
+  // Always show suggestions if user has typed 2+ characters, even if no matches
+  showSuggestions.value = input.length >= 2;
   selectedSuggestionIndex.value = -1;
 };
 
@@ -79,28 +82,39 @@ const selectSuggestion = (suburb) => {
   showSuggestions.value = false;
   filteredSuburbs.value = [];
   selectedSuggestionIndex.value = -1;
+  // Automatically trigger search after selecting
+  setTimeout(() => searchWaterQuality(), 100);
 };
 
 // Handle keyboard navigation
 const handleKeydown = (event) => {
-  if (!showSuggestions.value || filteredSuburbs.value.length === 0) return;
+  if (!showSuggestions.value) return;
   
   switch (event.key) {
     case 'ArrowDown':
       event.preventDefault();
-      selectedSuggestionIndex.value = Math.min(
-        selectedSuggestionIndex.value + 1,
-        filteredSuburbs.value.length - 1
-      );
+      if (filteredSuburbs.value.length > 0) {
+        selectedSuggestionIndex.value = Math.min(
+          selectedSuggestionIndex.value + 1,
+          filteredSuburbs.value.length - 1
+        );
+      }
       break;
     case 'ArrowUp':
       event.preventDefault();
-      selectedSuggestionIndex.value = Math.max(selectedSuggestionIndex.value - 1, -1);
+      if (filteredSuburbs.value.length > 0) {
+        selectedSuggestionIndex.value = Math.max(selectedSuggestionIndex.value - 1, -1);
+      }
       break;
     case 'Enter':
       event.preventDefault();
-      if (selectedSuggestionIndex.value >= 0) {
+      if (filteredSuburbs.value.length > 0 && selectedSuggestionIndex.value >= 0) {
         selectSuggestion(filteredSuburbs.value[selectedSuggestionIndex.value]);
+        // Automatically search after selecting
+        setTimeout(() => searchWaterQuality(), 100);
+      } else {
+        // If no suggestions available, try to search anyway
+        searchWaterQuality();
       }
       break;
     case 'Escape':
@@ -168,6 +182,44 @@ const getParameterUnit = (paramName) => {
   return units[paramName] || '';
 };
 
+// Parameter safety thresholds
+const getParameterThresholds = (paramName) => {
+  const thresholds = {
+    'pH': { safe: [6.5, 8.5], warning: [6.0, 9.0], danger: [0, 14] },
+    'Chloride as Cl': { safe: [0, 250], warning: [250, 500], danger: [500, Infinity] },
+    'Calcium (Total)': { safe: [0, 200], warning: [200, 400], danger: [400, Infinity] },
+    'Total Magnesium': { safe: [0, 150], warning: [150, 300], danger: [300, Infinity] },
+    'Sodium as Na': { safe: [0, 200], warning: [200, 400], danger: [400, Infinity] },
+    'Potassium as K': { safe: [0, 12], warning: [12, 24], danger: [24, Infinity] },
+    'Salinity as EC@25 (lab)': { safe: [0, 500], warning: [500, 1000], danger: [1000, Infinity] }
+  };
+  return thresholds[paramName] || { safe: [0, 100], warning: [100, 200], danger: [200, Infinity] };
+};
+
+// Get parameter color based on value
+const getParameterColor = (paramName, value) => {
+  const thresholds = getParameterThresholds(paramName);
+  
+  if (value >= thresholds.danger[0] && value < thresholds.danger[1]) {
+    return 'danger'; // Red
+  } else if (value >= thresholds.warning[0] && value < thresholds.warning[1]) {
+    return 'warning'; // Yellow
+  } else {
+    return 'success'; // Green
+  }
+};
+
+// Get parameter status text
+const getParameterStatus = (paramName, value) => {
+  const color = getParameterColor(paramName, value);
+  const statusMap = {
+    'success': 'Safe',
+    'warning': 'Caution',
+    'danger': 'Unsafe'
+  };
+  return statusMap[color] || 'Unknown';
+};
+
 // Get parameter description
 const getParameterDescription = (paramName) => {
   const descriptions = {
@@ -187,6 +239,23 @@ const searchWaterQuality = async () => {
   if (!suburbName.value.trim()) {
     errorMessage.value = "Please enter a suburb name";
     return;
+  }
+  
+  // Check if the input matches any available suburb exactly
+  const exactMatch = availableSuburbs.value.find(suburb => 
+    suburb.toLowerCase() === suburbName.value.toLowerCase()
+  );
+  
+  if (!exactMatch) {
+    // If no exact match, check if there are suggestions available
+    const hasSuggestions = filteredSuburbs.value.length > 0;
+    if (hasSuggestions) {
+      errorMessage.value = `No exact match found for "${suburbName.value}". Please select a suburb from the suggestions below.`;
+      return;
+    } else {
+      errorMessage.value = `No suburbs found for "${suburbName.value}". Please try a different suburb name.`;
+      return;
+    }
   }
   
   // Clear previous results
@@ -214,6 +283,17 @@ const searchSuburbAndPredict = async () => {
         suburb_name: suburbName.value
       })
     });
+
+    // Use this for Local
+    // const response = await fetch(`http://localhost:8000/api/prediction/search-by-suburb`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     suburb_name: suburbName.value
+    //   })
+    // });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -329,58 +409,11 @@ const clearResults = () => {
   showSuburbSearch.value = false;
 };
 
-// Generate PDF report
-const generatePDFReport = () => {
-  if (!predictionResult.value) return;
-  
-  const reportContent = `
-WATER QUALITY PREDICTION REPORT
-Generated: ${new Date().toLocaleDateString()}
-Suburb: ${suburbName.value}
-Site ID: ${predictionResult.value.site_id}
-Prediction Date: ${predictionResult.value.prediction_date}
-
-OVERALL ASSESSMENT:
-Risk Level: ${predictionResult.value.risk_level}
-WQI Score: ${predictionResult.value.wqi_score}/100
-Data Freshness: ${predictionResult.value.data_freshness}
-
-WATER QUALITY PARAMETERS:
-${Object.entries(predictionResult.value.parameters).map(([param, value]) => 
-  `${param}: ${value.toFixed(2)} ${getParameterUnit(param)}`
-).join('\n')}
-
-SPECIFIC GUIDANCE:
-
-Pregnancy:
-${(predictionResult.value.specific_guidance?.pregnancy || []).join('\n')}
-
-Infants:
-${(predictionResult.value.specific_guidance?.infants || []).join('\n')}
-
-Elderly:
-${(predictionResult.value.specific_guidance?.elderly || []).join('\n')}
-
-OFFLINE SAFETY CHECKLIST:
-${(predictionResult.value.offline_checklist || []).join('\n')}
-`;
-
-  // Create and download the report
-  const blob = new Blob([reportContent], { type: 'text/plain' });
-  const url = window.URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `water_quality_report_${predictionResult.value.site_id}_${new Date().toISOString().split('T')[0]}.txt`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  window.URL.revokeObjectURL(url);
-};
 </script>
 
 <template>
   <!-- Navigation bar -->
-  <div class="container position-sticky z-index-sticky top-0">
+  <div class="container position-sticky z-index-sticky top-0 navbar-container">
     <div class="row">
       <div class="col-12">
         <NavbarDefault :sticky="true" />
@@ -388,243 +421,212 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
     </div>
   </div>
     
-  <!-- Page header -->
-  <Header>
-    <div
-    class="page-header min-vh-100"
-    :style="`background-image: url(${heroBg})`"
-    loading="lazy"
-  >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto text-center">
-            <h1
-            class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
-            :style="{ display: 'inline-block' }"
-          >
-            Water Quality Prediction
-          </h1>
-            <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Advanced model-based water quality forecasting system providing predictions, safety ratings, and personalized guidance
+
+  <!-- Main content -->
+  <div class="container-fluid px-4 mt-6 pt-5 main-content">
+    <!-- Page Introduction -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-3 text-center">
+              <i class="material-icons me-2 text-info">analytics</i>
+              Water Quality Prediction
+            </h4>
+            <p class="text-muted mb-3 text-center">
+              This tool predicts water quality safety for your area. Simply enter your suburb name in the search box below and click "Search". The system will automatically find the nearest monitoring site and provide instant water quality predictions, safety ratings, and personalized guidance for pregnant women, infants, and elderly populations.
             </p>
           </div>
         </div>
       </div>
     </div>
-  </Header>
 
-  <!-- Main content -->
-  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
-    <div class="container">
-        <!-- Page Introduction -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-sm border-0">
-              <div class="card-body">
-                <div class="row align-items-center">
-                  <div class="col-12">
-                    <h4 class="mb-3">
-                      <i class="material-icons me-2 text-info">analytics</i>
-                      Water Quality Prediction
-                    </h4>
-                    <p class="text-muted mb-3">
-                      This tool predicts water quality safety for your area. Simply enter your suburb name in the search box below and click "Search". The system will automatically find the nearest monitoring site and provide instant water quality predictions, safety ratings, and personalized guidance for pregnant women, infants, and elderly populations.
-                    </p>
+    <!-- Left-Right Layout -->
+    <div class="row">
+      <!-- Left Panel: Search Input -->
+      <div class="col-lg-4 mb-4">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="material-icons me-2">search</i>
+              Search Area
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="position-relative">
+              <label class="form-label">
+                <i class="material-icons me-2 text-primary">location_city</i>
+                Suburb Name
+              </label>
+              <MaterialInput
+                v-model="suburbName"
+                class="mb-3"
+                type="text"
+                placeholder="e.g., Modella, Lyndhurst, Koo Wee Rup"
+                :disabled="isLoading"
+                @input="filterSuburbs"
+                @keydown="handleKeydown"
+                @blur="setTimeout(() => showSuggestions = false, 200)"
+              />
+              
+              <!-- Input validation feedback -->
+              <div v-if="suburbName && suburbName.length > 0 && suburbName.length < 2" 
+                   class="text-warning small mt-1">
+                <i class="material-icons me-1" style="font-size: 16px;">info</i>
+                Please enter at least 2 characters to see suggestions
+              </div>
+              
+              <!-- Autocomplete suggestions -->
+              <div v-if="showSuggestions" 
+                   class="position-absolute w-100 bg-white border rounded shadow-lg"
+                   style="top: 100%; z-index: 1000; max-height: 200px; overflow-y: auto;">
+                <!-- Show suggestions if available -->
+                <div v-if="filteredSuburbs.length > 0">
+                  <div v-for="(suburb, index) in filteredSuburbs" 
+                       :key="suburb"
+                       class="p-2 border-bottom cursor-pointer"
+                       :class="{ 'bg-primary text-white': index === selectedSuggestionIndex }"
+                       @click="selectSuggestion(suburb)"
+                       @mouseenter="selectedSuggestionIndex = index">
+                    <i class="material-icons me-2 text-muted">location_city</i>
+                    {{ suburb }}
                   </div>
+                </div>
+                <!-- Show no matches message -->
+                <div v-else class="p-3 text-center text-muted">
+                  <i class="material-icons me-2">search_off</i>
+                  No matching suburbs found for "{{ suburbName }}"
+                  <br>
+                  <small class="text-muted">Please try a different suburb name</small>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Search control panel -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="row align-items-end">
-                  <!-- Suburb Name input -->
-                  <div class="col-md-8">
-                    <div class="position-relative">
-                      <label class="form-label">
-                        <i class="material-icons me-2 text-primary">location_city</i>
-                        Suburb Name
-                      </label>
-                      <MaterialInput
-                        v-model="suburbName"
-                        class="mb-3"
-                        type="text"
-                        placeholder="e.g., Modella, Lyndhurst, Koo Wee Rup"
-                        :disabled="isLoading"
-                        @input="filterSuburbs"
-                        @keydown="handleKeydown"
-                        @blur="setTimeout(() => showSuggestions = false, 200)"
-                      />
-                      
-                      
-                      <!-- Autocomplete suggestions -->
-                      <div v-if="showSuggestions && filteredSuburbs.length > 0" 
-                           class="position-absolute w-100 bg-white border rounded shadow-lg"
-                           style="top: 100%; z-index: 1000; max-height: 200px; overflow-y: auto;">
-                        <div v-for="(suburb, index) in filteredSuburbs" 
-                             :key="suburb"
-                             class="p-2 border-bottom cursor-pointer"
-                             :class="{ 'bg-primary text-white': index === selectedSuggestionIndex }"
-                             @click="selectSuggestion(suburb)"
-                             @mouseenter="selectedSuggestionIndex = index">
-                          <i class="material-icons me-2 text-muted">location_city</i>
-                          {{ suburb }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Search button -->
-                  <div class="col-md-4">
-                    <MaterialButton
-                      @click="searchWaterQuality"
-                      variant="gradient"
-                      color="success"
-                      size="lg"
-                      class="w-100"
-                      :disabled="isLoading"
-                    >
-                      <i v-if="isLoading" class="material-icons me-2">hourglass_empty</i>
-                      <i v-else class="material-icons me-2">search</i>
-                      {{ isLoading ? "Getting Prediction..." : "Get Water Quality Prediction" }}
-                    </MaterialButton>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <!-- Error Message -->
-      <div v-if="errorMessage" class="row mb-4">
-        <div class="col-12">
-          <div class="alert alert-danger" role="alert">
-            <i class="material-icons me-2">error</i>
-            {{ errorMessage }}
+            
+            <!-- Search button -->
+            <MaterialButton
+              @click="searchWaterQuality"
+              variant="gradient"
+              color="success"
+              size="lg"
+              class="w-100 mt-3"
+              :disabled="isLoading || !suburbName.trim()"
+            >
+              <i v-if="isLoading" class="material-icons me-2">hourglass_empty</i>
+              <i v-else class="material-icons me-2">search</i>
+              {{ isLoading ? "Getting Prediction..." : "Get Water Quality Prediction" }}
+            </MaterialButton>
           </div>
         </div>
       </div>
 
-      <!-- Suburb Search Results -->
-      <div v-if="showSuburbSearch && suburbSearchResults.length > 0" class="row mb-4">
-        <div class="col-12">
-          <div class="card shadow-sm">
-            <div class="card-header bg-light">
-              <h5 class="mb-0">
-                <i class="material-icons me-2 text-info">location_city</i>
-                Sites Found in "{{ suburbName }}"
-              </h5>
+      <!-- Right Panel: Results Display -->
+      <div class="col-lg-8 mb-4">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">
+              <i class="material-icons me-2">analytics</i>
+              Prediction Results
+            </h5>
+          </div>
+          <div class="card-body">
+            <!-- Loading State -->
+            <div v-if="isLoading" class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-3 text-muted">Getting water quality prediction...</p>
             </div>
-            <div class="card-body">
+
+            <!-- Error State -->
+            <div v-else-if="errorMessage" class="text-center py-5">
+              <div class="alert alert-danger" role="alert">
+                <i class="material-icons me-2">error</i>
+                {{ errorMessage }}
+              </div>
+            </div>
+
+            <!-- No Results State -->
+            <div v-else-if="!predictionResult" class="text-center py-5">
+              <i class="material-icons text-muted mb-3" style="font-size: 4rem;">water_drop</i>
+              <h5 class="text-muted">No Prediction Results</h5>
+              <p class="text-muted">Enter a suburb name and click search to get water quality predictions</p>
+            </div>
+
+            <!-- Results Display -->
+            <div v-else>
+              <!-- Overall Quality Card with Traffic Light Status -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <div class="card border-0 bg-light">
+                    <div class="card-body p-4">
+                      <div class="row align-items-center">
+                        <div class="col-md-8">
+                          <h3 class="mb-2">
+                            <i class="material-icons me-2 text-success">water_drop</i>
+                            Water Quality Prediction for {{ suburbName }}
+                          </h3>
+                          <p class="text-muted mb-0">
+                            Prediction Date: {{ predictionResult.prediction_date }}
+                          </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                          <div class="d-flex flex-column align-items-end">
+                            <!-- Risk Level with Traffic Light -->
+                            <div class="d-flex align-items-center mb-2">
+                              <div class="traffic-light me-3">
+                                <div class="light" :class="{
+                                  'red': predictionResult.risk_level === 'Unsafe',
+                                  'yellow': predictionResult.risk_level === 'Moderate', 
+                                  'green': predictionResult.risk_level === 'Safe'
+                                }"></div>
+                              </div>
+                              <div class="text-end">
+                                <h2 class="mb-0">{{ predictionResult.risk_level }}</h2>
+                                <small class="text-muted">Risk Level</small>
+                              </div>
+                            </div>
+                            <!-- Status Badge -->
+                            <span class="badge badge-lg bg-gradient-{{ getStatusColor(predictionResult.risk_level) }}">
+                              {{ predictionResult.risk_level }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Water Parameters -->
               <div class="row">
-                <div v-for="site in suburbSearchResults" :key="site.site_id" class="col-md-6 col-lg-4 mb-3">
-                  <div class="card border-primary h-100">
-                    <div class="card-body text-center">
-                      <h6 class="card-title">
-                        <i class="material-icons me-2 text-primary">location_on</i>
-                        Site ID: {{ site.site_id }}
-                      </h6>
-                      <p class="card-text text-muted">
-                        <i class="material-icons me-2">location_city</i>
-                        {{ site.nearest_suburb }}
-                      </p>
-                      <MaterialButton
-                        @click="selectSiteFromSuburb(site.site_id)"
-                        variant="gradient"
-                        color="primary"
-                        size="sm"
-                        class="w-100"
-                      >
-                        <i class="material-icons me-2">analytics</i>
-                        Get Prediction
-                      </MaterialButton>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-if="suburbSearchResults.length === 0" class="text-center py-4">
-                <i class="material-icons text-muted" style="font-size: 3rem;">search_off</i>
-                <p class="text-muted mt-2">No sites found for "{{ suburbName }}"</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Prediction Results -->
-      <div v-if="predictionResult">
-        <!-- Overall Quality Card with Traffic Light Status -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-lg border-0">
-              <div class="card-body p-4">
-                <div class="row align-items-center">
-                  <div class="col-md-6">
-                    <h3 class="mb-2">
-                      <i class="material-icons me-2 text-success">water_drop</i>
-                      Water Quality Prediction for {{ suburbName }}
-                    </h3>
-                    <p class="text-muted mb-0">
-                      Prediction Date: {{ predictionResult.prediction_date }}
-                    </p>
-                  </div>
-                  <div class="col-md-6 text-end">
-                    <div class="d-flex flex-column align-items-end">
-                      <!-- Risk Level with Traffic Light -->
-                      <div class="d-flex align-items-center mb-2">
-                        <div class="traffic-light me-3">
-                          <div class="light" :class="{
-                            'red': predictionResult.risk_level === 'Unsafe',
-                            'yellow': predictionResult.risk_level === 'Moderate', 
-                            'green': predictionResult.risk_level === 'Safe'
-                          }"></div>
-                        </div>
-                        <div class="text-end">
-                          <h2 class="mb-0">{{ predictionResult.risk_level }}</h2>
-                          <small class="text-muted">Risk Level</small>
-                        </div>
-                      </div>
-                      <!-- Status Badge -->
-                      <span class="badge badge-lg bg-gradient-{{ getStatusColor(predictionResult.risk_level) }}">
-                        {{ predictionResult.risk_level }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Water Parameters -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-lg border-0">
-              <div class="card-header pb-0">
-                <h5 class="mb-0">
-                  <i class="material-icons me-2">science</i>
-                  Water Quality Parameters
-                </h5>
-              </div>
-              <div class="card-body">
+                <div class="col-12">
+                  <h5 class="mb-3">
+                    <i class="material-icons me-2">science</i>
+                    Water Quality Parameters
+                  </h5>
                   <div class="row">
                     <div v-for="(value, paramName) in predictionResult.parameters" :key="paramName" class="col-md-6 mb-3">
-                      <div class="d-flex align-items-start p-3 border rounded">
+                      <div class="d-flex align-items-start p-3 border rounded parameter-card" 
+                           :class="`border-${getParameterColor(paramName, value)} bg-light-${getParameterColor(paramName, value)}`">
                         <div class="me-3">
-                          <i class="material-icons text-info">
-                            science
-                          </i>
+                          <div class="parameter-indicator" :class="`bg-${getParameterColor(paramName, value)}`">
+                            <i class="material-icons text-white">
+                              {{ getParameterColor(paramName, value) === 'success' ? 'check_circle' : 
+                                 getParameterColor(paramName, value) === 'warning' ? 'warning' : 'error' }}
+                            </i>
+                          </div>
                         </div>
                         <div class="flex-grow-1">
-                          <h6 class="mb-1">{{ paramName }}</h6>
+                          <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h6 class="mb-0">{{ paramName }}</h6>
+                            <span class="badge" :class="`bg-${getParameterColor(paramName, value)}`">
+                              {{ getParameterStatus(paramName, value) }}
+                            </span>
+                          </div>
                           <p class="mb-1">
-                            <strong>{{ value.toFixed(2) }}</strong>
+                            <strong class="parameter-value" :class="`text-${getParameterColor(paramName, value)}`">
+                              {{ value.toFixed(2) }}
+                            </strong>
                             <span class="text-muted ms-2">{{ getParameterUnit(paramName) }}</span>
                           </p>
                           <p class="mb-2 text-muted small">
@@ -634,22 +636,20 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
                       </div>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Specific Guidance for Different Groups -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card shadow-lg border-0">
-              <div class="card-header pb-0">
-                <h5 class="mb-0">
-                  <i class="material-icons me-2">pregnant_woman</i>
-                  Pregnancy Safety Guidelines
-                </h5>
-              </div>
-              <div class="card-body">
+    <!-- Guidelines Section at Bottom -->
+    <div v-if="predictionResult" class="row">
+      <div class="col-12">
+
+        <!-- Pregnancy Safety Guidelines -->
+        <div class="mt-4">
                 <!-- Safe Level Guidelines -->
                 <div v-if="predictionResult.risk_level === 'Safe'" class="row">
                   <div class="col-12">
@@ -768,33 +768,19 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
           </div>
         </div>
 
-
-        <!-- Action Buttons -->
-        <div class="row mb-4">
-          <div class="col-12 text-center">
-            <MaterialButton
-              @click="generatePDFReport"
-              variant="gradient"
-              color="info"
-            >
-              <i class="material-icons me-2">download</i>
-              Download Result
-            </MaterialButton>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Footer -->
   <DefaultFooter />
 </template>
 
 <style scoped>
-.page-header {
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+/* Ensure proper spacing between navigation and content */
+.navbar-container {
+  margin-bottom: 3rem;
+}
+
+.main-content {
+  margin-top: 4rem;
+  padding-top: 2rem;
 }
 
 .cursor-pointer {
@@ -851,5 +837,83 @@ ${(predictionResult.value.offline_checklist || []).join('\n')}
 
 .material-icons {
   vertical-align: middle;
+}
+
+/* Parameter color styling */
+.parameter-card {
+  transition: all 0.3s ease;
+}
+
+.parameter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.parameter-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.parameter-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Background colors for parameter cards */
+.bg-light-success {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.bg-light-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.bg-light-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* Border colors */
+.border-success {
+  border-color: rgba(40, 167, 69, 0.3) !important;
+}
+
+.border-warning {
+  border-color: rgba(255, 193, 7, 0.3) !important;
+}
+
+.border-danger {
+  border-color: rgba(220, 53, 69, 0.3) !important;
+}
+
+/* Text colors */
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+/* Badge colors */
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.bg-danger {
+  background-color: #dc3545 !important;
 }
 </style>
