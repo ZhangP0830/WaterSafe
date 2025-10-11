@@ -5,6 +5,7 @@ import TrustedAlternativesView from "../views/TrustedAlternativesView.vue";
 import VoiceAssistantView from "../views/VoiceAssistantView.vue";
 import WaterQualityPredictionView from "../views/WaterQualityPredictionView.vue";
 import SanitationSupportView from "../views/SanitationSupportView.vue";
+import MaternalInfantHealthView from "../views/MaternalInfantHealthView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/sanitation-support",
       name: "sanitation-support",
       component: SanitationSupportView,
+    },
+    {
+      path: "/maternal-infant-health",
+      name: "maternal-infant-health",
+      component: MaternalInfantHealthView,
     },
   ],
 });

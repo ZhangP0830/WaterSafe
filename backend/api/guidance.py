@@ -198,7 +198,7 @@ def _generate_llm_checklist(payload: SanitationRequest) -> ChecklistResponse:
         )
 
         resp = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini-2024-07-18"),
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -367,7 +367,7 @@ async def explain_item(payload: ExplainRequest):
         user_prompt = f"Explain why this checklist item is important: {payload.item_id}. Context: {payload.context}"
         
         resp = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini-2024-07-18"),
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -430,7 +430,7 @@ async def chat_with_assistant(payload: ChatRequest):
         messages = [{"role": "system", "content": system_prompt}] + payload.messages
         
         resp = client.chat.completions.create(
-            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini-2024-07-18"),
             messages=messages,
             temperature=0.4,
         )
