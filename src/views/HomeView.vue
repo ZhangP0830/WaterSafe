@@ -162,6 +162,93 @@ const scrollToLearnMore = () => {
          </div>
        </div>
      </section>
+
+     <!-- Maternal & Infant Health Shield Feature Section -->
+     <section class="maternal-infant-feature-section py-5">
+       <div class="container">
+         <div class="row align-items-center">
+           <div class="col-lg-6">
+             <div class="maternal-infant-visual">
+               <div class="feature-cards">
+                 <div class="feature-card hydration-card">
+                   <div class="card-icon">
+                     <i class="fas fa-tint"></i>
+                   </div>
+                   <h5>Hydration Guidance</h5>
+                   <p>Trimester-specific advice</p>
+                 </div>
+                 <div class="feature-card feeding-card">
+                   <div class="card-icon">
+                     <i class="fas fa-baby"></i>
+                   </div>
+                   <h5>Feeding & Tracking</h5>
+                   <p>Safe feeding schedules</p>
+                 </div>
+                 <div class="feature-card health-card">
+                   <div class="card-icon">
+                     <i class="fas fa-stethoscope"></i>
+                   </div>
+                   <h5>Health Monitoring</h5>
+                   <p>Symptom checker & tips</p>
+                 </div>
+               </div>
+             </div>
+           </div>
+           <div class="col-lg-6">
+             <div class="maternal-infant-content">
+               <div class="feature-badge mb-3">
+                 <span class="badge bg-success text-white px-3 py-2">
+                   <i class="fas fa-shield-heart me-2"></i>Latest Feature
+                 </span>
+               </div>
+               <h2 class="display-6 fw-bold text-success mb-4">
+                 Maternal & Infant Health Shield
+               </h2>
+               <p class="lead text-muted mb-4">
+                 Comprehensive protection for pregnant women and infants during water safety disruptions. 
+                 Get personalized hydration, nutrition, hygiene, and health support in one integrated shield.
+               </p>
+               <div class="feature-highlights mb-4">
+                 <div class="row g-3">
+                   <div class="col-md-6">
+                     <div class="highlight-item">
+                       <i class="fas fa-tint text-success me-2"></i>
+                       <span>Trimester-Specific Hydration</span>
+                     </div>
+                   </div>
+                   <div class="col-md-6">
+                     <div class="highlight-item">
+                       <i class="fas fa-baby text-info me-2"></i>
+                       <span>Safe Feeding Schedules</span>
+                     </div>
+                   </div>
+                   <div class="col-md-6">
+                     <div class="highlight-item">
+                       <i class="fas fa-stethoscope text-warning me-2"></i>
+                       <span>Symptom Checker</span>
+                     </div>
+                   </div>
+                   <div class="col-md-6">
+                     <div class="highlight-item">
+                       <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                       <span>Emergency Action Cards</span>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               <div class="cta-buttons">
+                 <router-link to="/maternal-infant-health" class="btn btn-success btn-lg me-3 mb-2">
+                   <i class="fas fa-shield-heart me-2"></i>Get Your Shield
+                 </router-link>
+                 <button class="btn btn-outline-success btn-lg mb-2" @click="scrollToLearnMore">
+                   <i class="fas fa-info-circle me-2"></i>Learn More
+                 </button>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </section>
   </div>
 
   <!-- footer -->
@@ -196,6 +283,15 @@ const scrollToLearnMore = () => {
   overflow: hidden;
 }
 
+/* Maternal & Infant Health Feature Section */
+.maternal-infant-feature-section {
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+  border-radius: 20px;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
 .sanitation-feature-section::before {
   content: '';
   position: absolute;
@@ -204,6 +300,16 @@ const scrollToLearnMore = () => {
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, #007bff, #28a745, #ffc107, #dc3545);
+}
+
+.maternal-infant-feature-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #28a745, #20c997, #17a2b8, #6f42c1);
 }
 
 .feature-badge .badge {
@@ -296,6 +402,18 @@ const scrollToLearnMore = () => {
 
 .feature-card.result-card .card-icon {
   background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+}
+
+.feature-card.hydration-card .card-icon {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+}
+
+.feature-card.feeding-card .card-icon {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+.feature-card.health-card .card-icon {
+  background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
 }
 
 .feature-card h5 {
