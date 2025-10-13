@@ -1,6 +1,6 @@
 # WaterSafe 
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-water--safety.netlify.app-blue?style=for-the-badge&logo=netlify)](https://water-safety.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-water--safety.netlify.app-blue?style=for-the-badge&logo=netlify)](https://water-safety-guard.netlify.app/)
 [![Frontend](https://img.shields.io/badge/Frontend-Vue.js%203-4FC08D?style=for-the-badge&logo=vue.js)](https://vuejs.org/)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql)](https://mysql.com/)
@@ -9,15 +9,19 @@
 
 ## 🎯 Overview
 
-WaterSafe is a full-stack web application that empowers communities to make informed decisions about water safety and sanitation. The platform combines water quality data, AI-powered predictions, and expert guidance to provide users with actionable insights for maintaining water safety in their area.
+WaterSafe is a comprehensive water safety platform that protects families from water contamination risks. The application provides personalized guidance for hydration, nutrition, hygiene, and health monitoring during water safety disruptions, with special focus on pregnant women and infants.
 
 ### 🌟 Key Features
 
-- **🔍 Water Source Discovery**: Interactive map showing nearby water sources with status updates
+- **🛡️ Maternal & Infant Health Shield**: Comprehensive protection combining hydration, nutrition, hygiene, and health support
+- **💧 Hydration Safety Hub**: Daily safe water intake guidance tailored for pregnancy and infant formula preparation
+- **🍼 Feeding & Tracking**: Mother's hydration tracker and infant feeding/hydration schedule with offline capabilities
+- **🔍 Symptom Checker**: AI-powered tool to guide mothers when noticing early symptoms in themselves or their infant
+- **🧼 Sanitation Support**: Practical checklists for handwashing, safe surfaces, and waste handling during disruptions
+- **🚨 Emergency First-Response**: Immediate "what to do" cards for contamination, illness, or dehydration situations
 - **📊 Water Quality Prediction**: AI-powered predictions for water quality parameters using machine learning models
-- **🤖 Intelligent Guidance**: AI assistant providing personalized sanitation and hygiene recommendations
+- **🗺️ Trusted Alternatives**: Interactive map showing nearby safe water sources with status updates
 - **📱 Responsive Design**: Modern, mobile-first interface built with Vue.js and Material Design
-- **🗺️ Geographic Search**: Location-based filtering and radius search for water sources
 
 ## 🏗️ Architecture
 
