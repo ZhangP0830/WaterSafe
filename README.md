@@ -42,7 +42,18 @@ WaterSafe/
     └── Geographic Data
 ```
 
-## 🚀 Quick Start
+## Testing
+
+Comprehensive testing documentation is available in the `testing-docs/` folder:
+
+- **169 test cases** covering frontend and backend functionality
+- **Quality over quantity** approach with well-thought-out test cases
+- **Transparent reporting** of all results including failures
+- **Professional testing frameworks** with modern tools
+
+See `testing-docs/README.md` for complete testing documentation and execution instructions.
+
+## Quick Start
 
 ### Prerequisites
 - **Node.js** 16+ 
