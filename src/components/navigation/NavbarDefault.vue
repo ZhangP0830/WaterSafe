@@ -182,14 +182,37 @@ watch(
 }
 
 /* Responsive adjustments */
-@media (max-width: 1400px) {
+@media (max-width: 1600px) {
   .nav-item {
-    margin: 0 0.25rem !important;
+    margin: 0 0.15rem !important;
   }
   
   .nav-link {
-    padding: 0.4rem 0.8rem !important;
+    padding: 0.4rem 0.7rem !important;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  
+  .nav-text {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 1400px) {
+  .nav-item {
+    margin: 0 0.1rem !important;
+  }
+  
+  .nav-link {
+    padding: 0.35rem 0.6rem !important;
     font-size: 0.85rem;
+    max-width: 160px;
   }
   
   .nav-text {
@@ -199,16 +222,38 @@ watch(
 
 @media (max-width: 1200px) {
   .nav-item {
-    margin: 0 0.2rem !important;
+    margin: 0 0.05rem !important;
   }
   
   .nav-link {
-    padding: 0.4rem 0.6rem !important;
+    padding: 0.3rem 0.5rem !important;
     font-size: 0.8rem;
+    max-width: 140px;
   }
   
   .nav-text {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav-link {
+    padding: 0.25rem 0.4rem !important;
+    font-size: 0.75rem;
+    max-width: 120px;
+  }
+  
+  .nav-text {
+    font-size: 0.75rem;
+  }
+  
+  /* Hide icons on very small screens to save space */
+  .nav-link .material-icons {
+    display: none;
+  }
+  
+  .nav-link {
+    padding: 0.3rem 0.5rem !important;
   }
 }
 
@@ -254,7 +299,7 @@ watch(
         title="WaterSafe"
         data-placement="bottom"
       >
-        WaterSafety
+        WaterSafetyGuard
       </RouterLink>
       <RouterLink
         class="navbar-brand d-block d-md-none"
@@ -268,7 +313,7 @@ watch(
         title="WaterSafe"
         data-placement="bottom"
       >
-        WaterSafety
+        WaterSafetyGuard
       </RouterLink>
       <button
         class="navbar-toggler shadow-none ms-2"
@@ -302,7 +347,8 @@ watch(
                 :class="getTextColor()"
                 >analytics</i
               >
-              <span class="nav-text">Water Quality Prediction</span>
+              <span class="nav-text d-none d-xl-inline">Water Quality Prediction</span>
+              <span class="nav-text d-inline d-xl-none">Quality Prediction</span>
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -317,7 +363,8 @@ watch(
                 :class="getTextColor()"
                 >map</i
               >
-              <span class="nav-text">Trusted Alternatives</span>
+              <span class="nav-text d-none d-xl-inline">Trusted Alternatives</span>
+              <span class="nav-text d-inline d-xl-none">Alternatives</span>
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -332,7 +379,8 @@ watch(
                 :class="getTextColor()"
                 >water_drop</i
               >
-              <span class="nav-text">Water Safety Hub</span>
+              <span class="nav-text d-none d-xl-inline">Water Safety Hub</span>
+              <span class="nav-text d-inline d-xl-none">Safety Hub</span>
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -347,7 +395,8 @@ watch(
                 :class="getTextColor()"
                 >sanitizer</i
               >
-              <span class="nav-text">Sanitation Support</span>
+              <span class="nav-text d-none d-xl-inline">Sanitation Support</span>
+              <span class="nav-text d-inline d-xl-none">Sanitation</span>
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -362,7 +411,8 @@ watch(
                 :class="getTextColor()"
                 >pregnant_woman</i
               >
-              <span class="nav-text">Maternal & Infant Health</span>
+              <span class="nav-text d-none d-xl-inline">Maternal & Infant Health</span>
+              <span class="nav-text d-inline d-xl-none">Maternal Health</span>
             </RouterLink>
           </li>
           <li class="nav-item mx-2">
@@ -377,7 +427,8 @@ watch(
                 :class="getTextColor()"
                 >mic</i
               >
-              <span class="nav-text">Water Safety Companion</span>
+              <span class="nav-text d-none d-xl-inline">Water Safety Companion</span>
+              <span class="nav-text d-inline d-xl-none">Companion</span>
             </RouterLink>
           </li>
         </ul>
