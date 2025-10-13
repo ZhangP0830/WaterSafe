@@ -66,12 +66,12 @@
           <!-- Call to Action -->
           <div class="row mt-4">
             <div class="col-12">
-              <div class="alert alert-success border-0 text-center">
+              <div class="alert border-0 text-center bg-white text-dark shadow-sm" style="background-color: white !important; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08) !important;">
                 <div class="d-flex align-items-center justify-content-center">
-                  <i class="material-icons me-2" style="font-size: 2rem;">pregnant_woman</i>
+                  <i class="material-icons me-2 text-dark" style="font-size: 2rem;">pregnant_woman</i>
                   <div>
-                    <h6 class="mb-1">Protect Your Pregnancy Journey</h6>
-                    <p class="mb-0 small">
+                    <h6 class="mb-1 text-dark">Protect Your Pregnancy Journey</h6>
+                    <p class="mb-0 small text-muted">
                       Check your local tap water quality, get special pregnancy safety guidance, and find safe drinking water alternatives
                       to ensure a healthy pregnancy and protect your baby's healthy development.
                     </p>
