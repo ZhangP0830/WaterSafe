@@ -9,8 +9,8 @@ import FilledInfoCard from "../components/cards/infoCards/FilledInfoCard.vue";
 import MaterialButton from "@/components/MaterialButton.vue";
 import HomeInformation from "../components/HomeSection/HomeInformation.vue";
 import HomeIntroduction from "../components/HomeSection/HomeIntroduction.vue";
-// 导入图片资源
-import heroBg from "@/assets/img/homebackground.png";
+// 导入视频资源
+import heroVideo from "@/assets/video/opening_page_video_with_mother_infant.mp4";
 
 // 页面生命周期
 const body = document.getElementsByTagName("body")[0];
@@ -23,14 +23,7 @@ onUnmounted(() => {
   body.classList.remove("bg-gray-100");
 });
 
-// Methods
-const scrollToLearnMore = () => {
-  // Scroll to the HomeInformation section to show more details
-  const element = document.querySelector('.sanitation-feature-section');
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
-};
+// Methods - removed scrollToLearnMore as Learn More buttons are no longer used
 </script>
 
 <template>
@@ -45,24 +38,46 @@ const scrollToLearnMore = () => {
 
   <!-- hero section -->
   <Header>
-    <div
-      class="page-header min-vh-100"
-      :style="`background-image: url(${heroBg})`"
-      loading="lazy"
-    >
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 text-center mx-auto position-relative">
-            <h1
-              class="text-white pt-3 mt-n5 me-2 display-5 fw-bold"
-              :style="{ display: 'inline-block' }"
-            >
-              Water Safety
-            </h1>
-            <p class="lead text-white px-5 mt-4 mb-5" :style="{ fontWeight: '500', fontSize: '1.25rem' }">
-              Safe Water for Every Stage of Life.
-            </p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
+    <div class="page-header min-vh-100 hero-video-container">
+      <!-- Video Background -->
+      <video
+        class="hero-video"
+        :src="heroVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-label="Water safety video background"
+      >
+        <!-- Fallback for browsers that don't support video -->
+        <div class="hero-fallback">
+          <div class="container">
+            <div class="row justify-content-center align-items-center min-vh-100">
+              <div class="col-lg-8 col-xl-6 text-center">
+                <div class="hero-text-block">
+                  <h1 class="hero-title">WaterSafe</h1>
+                  <p class="hero-subtitle">Protecting Families from Water Contamination Risks</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </video>
+      
+      <!-- Content with Dark Black Block -->
+      <div class="hero-content">
+        <div class="container">
+          <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-lg-8 col-xl-6 text-center">
+                <div class="hero-text-block">
+                  <h1 class="hero-title">
+                    WaterSafe
+                  </h1>
+                  <p class="hero-subtitle">
+                    Protecting Families from Water Contamination Risks
+                  </p>
+                </div>
             </div>
           </div>
         </div>
@@ -71,9 +86,11 @@ const scrollToLearnMore = () => {
   </Header>
 
     <!-- main content section -->
-  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n6">
+  <div class="card card-body blur shadow-blur mx-3 mx-md-4 mt-n3 content-section">
     <!-- here you can add your content -->
-     <HomeIntroduction />
+     <div class="pt-4">
+       <HomeIntroduction />
+     </div>
      <HomeInformation />
      
      <!-- Sanitation Support Feature Section -->
@@ -123,12 +140,9 @@ const scrollToLearnMore = () => {
                  </div>
                </div>
                <div class="cta-buttons">
-                 <router-link to="/sanitation-support" class="btn btn-primary btn-lg me-3 mb-2">
+                 <router-link to="/sanitation-support" class="btn btn-primary btn-lg">
                    <i class="fas fa-magic me-2"></i>Get Your Checklist
                  </router-link>
-                 <button class="btn btn-outline-primary btn-lg mb-2" @click="scrollToLearnMore">
-                   <i class="fas fa-info-circle me-2"></i>Learn More
-                 </button>
                </div>
              </div>
            </div>
@@ -237,12 +251,9 @@ const scrollToLearnMore = () => {
                  </div>
                </div>
                <div class="cta-buttons">
-                 <router-link to="/maternal-infant-health" class="btn btn-success btn-lg me-3 mb-2">
+                 <router-link to="/maternal-infant-health" class="btn btn-success btn-lg">
                    <i class="fas fa-shield-heart me-2"></i>Get Your Shield
                  </router-link>
-                 <button class="btn btn-outline-success btn-lg mb-2" @click="scrollToLearnMore">
-                   <i class="fas fa-info-circle me-2"></i>Learn More
-                 </button>
                </div>
              </div>
            </div>
@@ -262,6 +273,134 @@ const scrollToLearnMore = () => {
 
 .bg-gray-200 {
   background-color: #e9ecef !important;
+}
+
+/* Hero Video Container */
+.hero-video-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+/* Hero Video Styling */
+.hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  object-fit: cover;
+  filter: brightness(1) contrast(1);
+}
+
+/* Hero Content */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark Black Text Block */
+.hero-text-block {
+  background: rgba(26, 26, 26, 0.4); /* Dark black with much reduced opacity */
+  padding: 3rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 10px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-text-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffffff, transparent);
+  opacity: 0.3;
+}
+
+.hero-text-block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.05) 0%, 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+/* Hero Typography */
+.hero-title {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.hero-subtitle {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  color: #e0e0e0;
+  margin-bottom: 0;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  opacity: 0.95;
+  position: relative;
+}
+
+/* Fallback styling for browsers that don't support video */
+.hero-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5f5dc 0%, #f0e68c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Content Section Spacing */
+.content-section {
+  position: relative;
+  z-index: 10;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .icon-shape {
@@ -465,11 +604,42 @@ const scrollToLearnMore = () => {
   
   .cta-buttons .btn {
     width: 100%;
+  }
+  
+  /* Mobile video optimizations */
+  .hero-video {
+    filter: brightness(1.1) contrast(1.1);
+  }
+  
+  /* Mobile Hero Adjustments */
+  .hero-text-block {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+    border-radius: 15px;
+  }
+  
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 2.8rem);
     margin-bottom: 1rem;
   }
   
-  .cta-buttons .btn:last-child {
-    margin-bottom: 0;
+  .hero-subtitle {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 992px) and (min-width: 769px) {
+  .hero-text-block {
+    padding: 2.5rem 2rem;
+  }
+  
+  .hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
   }
 }
 
@@ -493,6 +663,21 @@ const scrollToLearnMore = () => {
     width: 1.5rem;
     height: 2px;
     background: linear-gradient(90deg, #007bff, #28a745);
+  }
+  
+  /* Large screen optimizations */
+  .hero-text-block {
+    padding: 3.5rem 3rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .hero-title {
+    font-size: clamp(3rem, 4vw, 4.5rem);
+  }
+  
+  .hero-subtitle {
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
   }
 }
 </style>
