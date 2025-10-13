@@ -24,7 +24,11 @@ app.add_middleware(
         "https://water-safety.vercel.app",
         "https://water-safety.vercel.app/*",
         "https://water-safe-git-main-zhangp0830s-projects.vercel.app",
-        "https://water-safe-git-main-zhangp0830s-projects.vercel.app/*"
+        "https://water-safe-git-main-zhangp0830s-projects.vercel.app/*",
+        "https://*.netlify.app",
+        "https://*.netlify.app/*",
+        "https://water-safety-guard.netlify.app",
+        "https://water-safety-guard.netlify.app/*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
