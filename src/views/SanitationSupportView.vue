@@ -34,18 +34,24 @@
           <div class="col-12">
             <div class="progress-steps">
               <div class="step" :class="{ active: currentStep >= 1, completed: currentStep > 1 }">
-                <div class="step-number">1</div>
-                <div class="step-label">Choose Mode</div>
+                 <div class="step-circle" :class="{ active: currentStep >= 1, completed: currentStep > 1 }">
+                   <span class="step-number">1</span>
+                 </div>
+                 <div class="step-label">Who needs guidance</div>
               </div>
               <div class="step-line" :class="{ active: currentStep > 1 }"></div>
               <div class="step" :class="{ active: currentStep >= 2, completed: currentStep > 2 }">
-                <div class="step-number">2</div>
-                <div class="step-label">Choose Place</div>
+                 <div class="step-circle" :class="{ active: currentStep >= 2, completed: currentStep > 2 }">
+                   <span class="step-number">2</span>
+                 </div>
+                 <div class="step-label">Infant age</div>
               </div>
               <div class="step-line" :class="{ active: currentStep > 2 }"></div>
               <div class="step" :class="{ active: currentStep >= 3 }">
-                <div class="step-number">3</div>
-                <div class="step-label">Get Guidance</div>
+                 <div class="step-circle" :class="{ active: currentStep >= 3 }">
+                   <span class="step-number">3</span>
+                 </div>
+                 <div class="step-label">Household & advisory</div>
               </div>
             </div>
           </div>
@@ -62,9 +68,6 @@
             <div class="row g-4">
               <div class="col-12 col-md-6">
                 <div class="mode-card" :class="{ selected: mode === 'general' }" @click="selectMode('general')">
-                  <div class="card-icon general">
-                    <i class="fas fa-tools"></i>
-                  </div>
                   <div class="card-content">
                     <h4>General Sanitation</h4>
                     <p>Short outages, low pressure, brief contamination</p>
@@ -74,16 +77,10 @@
                       <span class="feature-tag">Minor contamination</span>
                     </div>
                   </div>
-                  <div class="card-selection-indicator">
-                    <i class="fas fa-check-circle"></i>
-                  </div>
                 </div>
               </div>
               <div class="col-12 col-md-6">
                 <div class="mode-card" :class="{ selected: mode === 'flood' }" @click="selectMode('flood')">
-                  <div class="card-icon flood">
-                    <i class="fas fa-water"></i>
-                  </div>
                   <div class="card-content">
                     <h4>Flood / Water-logging</h4>
                     <p>Toilets unusable, services disrupted, displacement</p>
@@ -92,9 +89,6 @@
                       <span class="feature-tag">Service disruption</span>
                       <span class="feature-tag">Displacement</span>
                     </div>
-                  </div>
-                  <div class="card-selection-indicator">
-                    <i class="fas fa-check-circle"></i>
                   </div>
                 </div>
               </div>
@@ -134,15 +128,9 @@
                   :aria-pressed="place === placeOption.value"
                   :aria-label="`Select ${placeOption.label} - ${placeOption.description}`"
                 >
-                  <div class="card-icon" :class="placeOption.iconClass">
-                    <i :class="placeOption.icon"></i>
-                  </div>
                   <div class="card-content">
                     <h5>{{ placeOption.label }}</h5>
                     <p>{{ placeOption.description }}</p>
-                  </div>
-                  <div class="card-selection-indicator">
-                    <i class="fas fa-check-circle"></i>
                   </div>
                 </div>
               </div>
@@ -161,29 +149,17 @@
             <div class="row g-3 justify-content-center">
               <div class="col-12 col-md-6">
                 <div class="profile-card" :class="{ active: profile.pregnant }" @click="updateProfile('pregnant', !profile.pregnant)">
-                  <div class="profile-icon">
-                    <i class="fas fa-heart"></i>
-                  </div>
                   <div class="profile-content">
                     <h5>Pregnant</h5>
                     <p>Special hygiene needs during pregnancy</p>
-                  </div>
-                  <div class="profile-toggle">
-                    <i class="fas fa-check" v-if="profile.pregnant"></i>
                   </div>
                 </div>
               </div>
               <div class="col-12 col-md-6">
                 <div class="profile-card" :class="{ active: profile.infant }" @click="updateProfile('infant', !profile.infant)">
-                  <div class="profile-icon">
-                    <i class="fas fa-baby"></i>
-                  </div>
                   <div class="profile-content">
                     <h5>Infant in Household</h5>
                     <p>Extra care for baby's hygiene and safety</p>
-                  </div>
-                  <div class="profile-toggle">
-                    <i class="fas fa-check" v-if="profile.infant"></i>
                   </div>
                 </div>
               </div>
@@ -264,64 +240,61 @@
         <div class="row g-4">
           <!-- Main Checklist -->
           <div class="col-12 col-lg-8">
-            <div class="checklist-container">
-              <div class="checklist-header">
-                <h4 class="mb-3">
-                  <i class="fas fa-list-check me-2"></i>
-                  Action Items
-                </h4>
-                <div class="progress mb-3">
-                  <div class="progress-bar bg-success" :style="{ width: completionPercentage + '%' }"></div>
+             <div class="action-plan-container">
+               <div class="action-plan-header">
+                 <h2 class="action-plan-title">Your Action Plan</h2>
+                 <p class="action-plan-subtitle">These steps protect you and your baby. Proper sanitation prevents waterborne diseases and ensures safe living conditions during water emergencies.</p>
+                 
+                 <div class="progress-section">
+                   <div class="progress-card">
+                     <div class="progress-info">
+                       <div class="progress-stats">
+                         <span class="progress-number">{{ completedItems }}</span>
+                         <span class="progress-label">of {{ checklist.length }} completed</span>
                 </div>
-                <small class="text-muted">{{ completedItems }} of {{ checklist.length }} completed</small>
+                       <div class="progress-percentage">{{ completionPercentage }}%</div>
+                     </div>
+                     <div class="progress-bar-container">
+                       <div class="progress-bar" :style="{ width: completionPercentage + '%' }"></div>
+                     </div>
+                     <div class="progress-message" v-if="completionPercentage > 0">
+                       <span v-if="completionPercentage < 25">You're getting started! Every step counts.</span>
+                       <span v-else-if="completionPercentage < 50">You're making good progress! Keep it up.</span>
+                       <span v-else-if="completionPercentage < 75">You're doing great! Almost there.</span>
+                       <span v-else-if="completionPercentage < 100">You're making excellent progress!</span>
+                       <span v-else>🎉 Congratulations! You've completed your action plan!</span>
+                     </div>
+                   </div>
+                 </div>
               </div>
               
-              <!-- Top 3 Urgent Actions -->
-              <div v-if="checklistData && checklistData.summary_top3 && checklistData.summary_top3.length > 0" class="urgent-actions mb-4">
-                <h5 class="mb-3">
-                  <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                  Your Top 3 Urgent Actions
-                </h5>
-                <div class="row g-3">
-                  <div v-for="(item, idx) in checklistData.summary_top3" :key="'urgent-' + (item.id || idx)" class="col-12">
-                    <div class="checklist-card urgent" :class="{ completed: item.done }">
+              <!-- Priority Actions -->
+              <div v-if="checklistData && checklistData.summary_top3 && checklistData.summary_top3.length > 0" class="priority-actions-section">
+                <div class="section-header">
+                  <h3 class="section-title">Priority Actions</h3>
+                  <p class="section-subtitle">These steps protect you and your baby. Start with these critical actions.</p>
+                </div>
+                
+                <div class="priority-cards">
+                  <div v-for="(item, idx) in checklistData.summary_top3" :key="'urgent-' + (item.id || idx)" class="priority-card" :class="[getUrgencyClass(item.priority), { completed: item.done }]">
                       <div class="card-header">
-                        <div class="item-icon">{{ item.icons && item.icons[0] || '📋' }}</div>
-                        <div class="item-priority-badge" :class="getPriorityClass(item.priority)">
+                      <div class="priority-badge" :class="getUrgencyClass(item.priority)">
                           {{ getPriorityText(item.priority) }}
                         </div>
-                        <div v-for="badge in item.badges" :key="badge" class="badge bg-info ms-1">
-                          {{ badge }}
+                        <div class="card-checkbox">
+                          <input type="checkbox" :id="'urgent-' + idx" v-model="item.done" class="modern-checkbox" @change="onCheckboxChange(item)" />
                         </div>
                       </div>
-                      <div class="card-body">
-                        <div class="item-checkbox">
-                          <input type="checkbox" :id="'urgent-' + idx" v-model="item.done" class="form-check-input" />
-                          <label :for="'urgent-' + idx" class="form-check-label">
-                            <i class="fas fa-check"></i>
-                          </label>
-                        </div>
-                        <div class="item-content">
-                          <h6 class="item-title">{{ item.title }}</h6>
-                          <p class="item-detail" v-if="item.body">{{ item.body }}</p>
-                          <button class="btn btn-link btn-sm p-0" @click="openWhyModal(item)">
-                            <i class="fas fa-question-circle me-1"></i>Why is this important?
-                          </button>
-                          
-                          <!-- Source References -->
-                          <div v-if="item.sources && item.sources.length > 0" class="item-sources">
-                            <a 
-                              v-for="source in item.sources" 
-                              :key="source.label"
-                              :href="source.url" 
-                              target="_blank" 
-                              rel="noopener"
-                              class="source-chip"
-                              :aria-label="`Reference: ${source.label}`"
-                            >
-                              {{ source.label }}
-                            </a>
-                          </div>
+                    
+                    <div class="card-content">
+                      <h4 class="card-title">{{ item.title }}</h4>
+                      <p class="card-description">{{ getActionDescription(item) }}</p>
+                      
+                      <div class="card-actions" v-if="item.sources && item.sources.length > 0">
+                        <div class="source-badges">
+                          <span v-for="source in item.sources" :key="source.label" class="source-badge" @click="openReference(source.url)">
+                            <i class="fas fa-external-link-alt me-1"></i>{{ source.label }}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -329,74 +302,61 @@
                 </div>
               </div>
 
-              <!-- See Full Checklist Button -->
-              <div class="text-center mb-4" v-if="!showFullChecklist">
-                <button class="btn btn-outline-primary btn-lg" @click="showFullChecklist = true">
-                  <i class="fas fa-list me-2"></i>See Full Checklist ({{ remainingItems.length }} more items)
+              <!-- View Complete Checklist -->
+              <div class="expand-section" v-if="!showFullChecklist">
+                <div class="expand-card">
+                  <div class="expand-content">
+                    <h4 class="expand-title">Complete Checklist</h4>
+                    <p class="expand-description">{{ remainingItems.length }} additional steps to ensure comprehensive sanitation and hygiene</p>
+                  </div>
+                  <button class="expand-btn" @click="showFullChecklist = true">
+                    <i class="fas fa-arrow-down me-2"></i>View All Steps
                 </button>
+                </div>
               </div>
 
-              <!-- Full Checklist (Progressive Disclosure) -->
-              <div v-if="showFullChecklist" class="full-checklist">
-                <h5 class="mb-3">
-                  <i class="fas fa-tasks me-2"></i>
-                  Complete Checklist
-                </h5>
+              <!-- Complete Action Plan -->
+              <div v-if="showFullChecklist" class="complete-checklist">
+                <div class="section-header">
+                  <h3 class="section-title">Complete Checklist</h3>
+                  <p class="section-subtitle">Comprehensive steps organized by category for complete sanitation coverage</p>
+                </div>
                 
-                <!-- Grouped by Category -->
-                <div v-for="category in groupedChecklist" :key="category.name" class="category-group mb-4">
+                <!-- Organized by Category -->
+                <div v-for="category in groupedChecklist" :key="category.name" class="category-section">
                   <div class="category-header">
-                    <h6 class="category-title">
-                      <span class="category-icon">{{ category.icon }}</span>
-                      {{ category.displayName }}
-                    </h6>
-                    <div class="category-progress">
-                      <div class="progress">
-                        <div class="progress-bar" :class="category.progressClass" 
-                             :style="{ width: category.completionPercentage + '%' }"></div>
+                    <div class="category-info">
+                      <div class="category-icon">{{ getCategoryIcon(category.name) }}</div>
+                      <div class="category-details">
+                        <h4 class="category-title">{{ category.displayName }}</h4>
+                        <p class="category-description">{{ getCategoryDescription(category.name) }}</p>
                       </div>
-                      <small class="text-muted">{{ category.completed }}/{{ category.items.length }}</small>
+                    </div>
+                    <div class="category-progress">
+                      <div class="progress-info">
+                        <span class="progress-count">{{ category.completed }}/{{ category.items.length }}</span>
+                        <span class="progress-percentage">{{ category.completionPercentage }}%</span>
+                      </div>
+                      <div class="progress-bar-container">
+                        <div class="progress-bar" :style="{ width: category.completionPercentage + '%' }"></div>
+                      </div>
                     </div>
                   </div>
                   
                   <div class="category-items">
                     <div v-for="(item, idx) in category.items" :key="'full-' + category.name + '-' + idx" 
-                         class="checklist-card" :class="[item.category, { completed: item.done }]">
+                         class="action-card" :class="[item.category, { completed: item.done }]">
                       <div class="card-header">
-                        <div class="item-icon">{{ item.icon || '📋' }}</div>
-                        <div class="item-priority-badge" :class="getPriorityClass(item.priority)">
+                        <div class="priority-badge" :class="getPriorityClass(item.priority)">
                           {{ getPriorityText(item.priority) }}
                         </div>
+                        <div class="card-checkbox">
+                          <input type="checkbox" :id="'full-' + category.name + '-' + idx" v-model="item.done" class="modern-checkbox" @change="onCheckboxChange(item)" />
                       </div>
-                      <div class="card-body">
-                        <div class="item-checkbox">
-                          <input type="checkbox" :id="'full-' + category.name + '-' + idx" v-model="item.done" class="form-check-input" />
-                          <label :for="'full-' + category.name + '-' + idx" class="form-check-label">
-                            <i class="fas fa-check"></i>
-                          </label>
                         </div>
-                        <div class="item-content">
-                          <h6 class="item-title">{{ item.title }}</h6>
-                          <p class="item-detail" v-if="item.detail">{{ item.detail }}</p>
-                          <button class="btn btn-link btn-sm p-0" @click="openWhyModal(item)">
-                            <i class="fas fa-question-circle me-1"></i>Why is this important?
-                          </button>
-                          
-                          <!-- Source References -->
-                          <div v-if="item.sources && item.sources.length > 0" class="item-sources">
-                            <a 
-                              v-for="source in item.sources" 
-                              :key="source.label"
-                              :href="source.url" 
-                              target="_blank" 
-                              rel="noopener"
-                              class="source-chip"
-                              :aria-label="`Reference: ${source.label}`"
-                            >
-                              {{ source.label }}
-                            </a>
-                          </div>
-                        </div>
+                      <div class="card-content">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="card-description" v-if="item.detail">{{ item.detail }}</p>
                       </div>
                     </div>
                   </div>
@@ -407,150 +367,57 @@
 
           <!-- Quick Actions Sidebar -->
           <div class="col-12 col-lg-4">
-            <div class="quick-actions">
-              <h5 class="mb-4">
-                <i class="fas fa-bolt me-2"></i>
-                Quick Actions
-              </h5>
+            <div class="quick-actions-panel">
+              <div class="panel-header">
+                <h4 class="panel-title">Quick Actions</h4>
+                <p class="panel-subtitle">Essential tools and navigation</p>
+              </div>
               
               <div class="action-buttons">
-                <router-link to="/" class="btn btn-outline-primary w-100 mb-3">
-                  <i class="fas fa-home me-2"></i>
-                  Back to Home
+                <router-link to="/" class="action-button primary">
+                  <i class="fas fa-home"></i>
+                  <span>Back to Home</span>
                 </router-link>
-                <button class="btn btn-outline-success w-100 mb-3" @click="downloadPDF">
-                  <i class="fas fa-download me-2"></i>
-                  Download PDF
-                </button>
-                <button class="btn btn-outline-info w-100 mb-3" @click="cacheOffline">
-                  <i class="fas fa-wifi-slash me-2"></i>
-                  Cache for Offline
-                </button>
-                <button class="btn btn-outline-secondary w-100 mb-3" @click="startNewChecklist">
-                  <i class="fas fa-redo me-2"></i>
-                  Start New Checklist
-                </button>
-              </div>
-
-              <!-- Hygiene Micro-Flows -->
-              <div class="micro-flows mt-4">
-                <h6 class="mb-3">
-                  <i class="fas fa-microscope me-2"></i>
-                  Hygiene Micro-Flows
-                </h6>
                 
-                <div class="micro-flow-card" @click="showHandwashTimer = !showHandwashTimer">
-                  <div class="micro-icon">
-                    <i class="fas fa-hands-wash"></i>
-                  </div>
-                  <div class="micro-content">
-                    <h6>Hand Washing Timer</h6>
-                    <p>20-second timer with progress</p>
-                  </div>
-                </div>
-
-                <div class="micro-flow-card" @click="showDilution = !showDilution">
-                  <div class="micro-icon">
-                    <i class="fas fa-flask"></i>
-                  </div>
-                  <div class="micro-content">
-                    <h6>Disinfection Calculator</h6>
-                    <p>Chlorine dilution guide</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Micro-Flows Modal/Overlay -->
-    <div v-if="showHandwashTimer" class="micro-flow-overlay" @click="showHandwashTimer = false">
-      <div class="micro-flow-modal" @click.stop>
-        <div class="modal-header">
-          <h5>
-            <i class="fas fa-hands-wash me-2"></i>
-            Hand Washing Timer
-          </h5>
-          <button class="btn-close" @click="showHandwashTimer = false">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body text-center">
-          <div class="timer-circle">
-            <div class="timer-progress" :style="{ '--progress': handwashProgress }">
-              <div class="timer-text">
-                <div class="timer-seconds">{{ handwashSeconds }}</div>
-                <div class="timer-label">seconds</div>
-              </div>
-            </div>
-          </div>
-          <div class="timer-controls mt-4">
-            <button v-if="!handwashActive" class="btn btn-success btn-lg" @click="startHandwashTimer">
-              <i class="fas fa-play me-2"></i>Start Washing
-            </button>
-            <button v-else class="btn btn-warning btn-lg" @click="stopHandwashTimer">
-              <i class="fas fa-pause me-2"></i>Pause
-            </button>
-            <button class="btn btn-outline-secondary ms-2" @click="resetHandwashTimer">
-              <i class="fas fa-redo me-2"></i>Reset
-            </button>
-          </div>
-          <div class="timer-instructions mt-3">
-            <p class="text-muted">Wet hands → Apply soap → Scrub for 20 seconds → Rinse → Dry</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dilution Calculator Modal -->
-    <div v-if="showDilution" class="micro-flow-overlay" @click="showDilution = false">
-      <div class="micro-flow-modal" @click.stop>
-        <div class="modal-header">
-          <h5>
-            <i class="fas fa-flask me-2"></i>
-            Disinfection Calculator
-          </h5>
-          <button class="btn-close" @click="showDilution = false">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="calculator-form">
-            <div class="row g-3">
-              <div class="col-12 col-md-6">
-                <label class="form-label">Target ppm (free chlorine)</label>
-                <input type="number" class="form-control" v-model.number="targetPpm" min="50" step="50" />
-              </div>
-              <div class="col-12 col-md-6">
-                <label class="form-label">Solution volume (L)</label>
-                <input type="number" class="form-control" v-model.number="solutionLitres" min="0.25" step="0.25" />
-              </div>
-              <div class="col-12">
-                <label class="form-label">Bleach concentration (% sodium hypochlorite)</label>
-                <input type="number" class="form-control" v-model.number="bleachPercent" min="1" max="8" step="0.5" />
-              </div>
-              <div class="col-12">
-                <button class="btn btn-primary w-100" @click="computeBleach">
-                  <i class="fas fa-calculator me-2"></i>Calculate
+                <button class="action-button secondary" @click="downloadPDF">
+                  <i class="fas fa-download"></i>
+                  <span>Download PDF</span>
                 </button>
+                
+                <button class="action-button tertiary" @click="startNewChecklist">
+                  <i class="fas fa-redo"></i>
+                  <span>Start Over</span>
+          </button>
+    </div>
+
+              <!-- Progress Summary -->
+              <div class="progress-summary">
+                <h5 class="summary-title">Your Progress</h5>
+                <div class="summary-stats">
+                  <div class="stat-item">
+                    <span class="stat-number">{{ completedItems }}</span>
+                    <span class="stat-label">Completed</span>
+        </div>
+                  <div class="stat-item">
+                    <span class="stat-number">{{ checklist.length - completedItems }}</span>
+                    <span class="stat-label">Remaining</span>
+              </div>
+              </div>
+                <div class="summary-progress">
+                  <div class="progress-bar-container">
+                    <div class="progress-bar" :style="{ width: completionPercentage + '%' }"></div>
+              </div>
+                  <span class="progress-text">{{ completionPercentage }}% Complete</span>
               </div>
             </div>
-            <div v-if="bleachMl !== null" class="result-card mt-4">
-              <div class="result-icon">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <div class="result-content">
-                <h6>Recipe</h6>
-                <p>Add <strong>{{ bleachMl.toFixed(1) }} mL</strong> of bleach ({{ bleachPercent }}%) to {{ solutionLitres }} L water</p>
-                <small class="text-muted">Allow 1 minute wet contact time for disinfection</small>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Consistent Footer -->
+    <DefaultFooter />
 
     <!-- Why Modal -->
     <div v-if="showWhyModal" class="micro-flow-overlay" @click="showWhyModal = false">
@@ -582,13 +449,6 @@
       </div>
     </div>
 
-    <!-- Floating Chat Bot Button -->
-    <div v-if="currentStep === 3 && checklistData" class="floating-chat-button">
-      <button class="chat-toggle-btn" @click="toggleChatBot" :class="{ active: showChatBot }">
-        <i class="fas fa-comments"></i>
-        <span class="chat-badge" v-if="!showChatBot">Ask me</span>
-      </button>
-    </div>
 
     <!-- Chat Bot Drawer -->
     <div v-if="showChatBot" class="chat-drawer">
@@ -666,11 +526,13 @@
 
 <script>
 import NavbarDefault from "../components/navigation/NavbarDefault.vue";
+import DefaultFooter from "../components/layout/FooterDefault.vue";
 
 export default {
   name: "SanitationSupportView",
   components: {
-    NavbarDefault
+    NavbarDefault,
+    DefaultFooter
   },
   data() {
     return {
@@ -1269,6 +1131,151 @@ export default {
     getSectionCompletedCount(section) {
       if (!section.items) return 0;
       return section.items.filter(item => item.done).length;
+    },
+    
+    getCategoryDescription(categoryName) {
+      const descriptions = {
+        'water': 'Water safety and treatment procedures',
+        'hygiene': 'Personal and environmental hygiene practices',
+        'waste': 'Waste management and disposal methods',
+        'food': 'Food safety and preparation guidelines',
+        'emergency': 'Emergency response and safety measures',
+        'general': 'General sanitation and maintenance tasks'
+      };
+      return descriptions[categoryName] || 'Important sanitation and hygiene steps';
+    },
+    
+    getUrgencyClass(priority) {
+      switch (priority) {
+        case 'urgent': return 'urgency-critical';
+        case 'high': return 'urgency-high';
+        case 'medium': return 'urgency-medium';
+        case 'low': return 'urgency-low';
+        default: return 'urgency-medium';
+      }
+    },
+    
+    getActionIcon(priority) {
+      switch (priority) {
+        case 'urgent': return 'fas fa-exclamation-triangle';
+        case 'high': return 'fas fa-shield-alt';
+        case 'medium': return 'fas fa-check-circle';
+        case 'low': return 'fas fa-info-circle';
+        default: return 'fas fa-check-circle';
+      }
+    },
+    
+    getActionDescription(item) {
+      // Return a one-line description about the action with specific reasoning
+      if (item.body && item.body.length > 0) {
+        // Take the first sentence or first 80 characters
+        const firstSentence = item.body.split('.')[0];
+        return firstSentence.length > 80 ? firstSentence.substring(0, 80) + '...' : firstSentence;
+      }
+      
+      // Provide specific descriptions based on action title/content
+      const title = (item.title || '').toLowerCase();
+      
+      // Water-related actions
+      if (title.includes('water') || title.includes('boil') || title.includes('purify')) {
+        return 'Ensures safe drinking water and prevents waterborne diseases.';
+      }
+      
+      // Toilet and sanitation facilities
+      if (title.includes('toilet') || title.includes('bathroom') || title.includes('restroom') || title.includes('facility')) {
+        return 'Prevents contamination and reduces risk of waterborne illnesses.';
+      }
+      
+      // Hand hygiene actions
+      if (title.includes('hand') || title.includes('wash') || title.includes('hygiene') || title.includes('soap')) {
+        return 'Prevents the spread of germs and infections.';
+      }
+      
+      // Food safety actions
+      if (title.includes('food') || title.includes('cook') || title.includes('prepare') || title.includes('kitchen')) {
+        return 'Prevents food contamination and foodborne illnesses.';
+      }
+      
+      // Waste management actions
+      if (title.includes('waste') || title.includes('dispose') || title.includes('garbage') || title.includes('trash') || title.includes('bin')) {
+        return 'Prevents contamination and maintains clean environment.';
+      }
+      
+      // Cleaning and sanitizing actions
+      if (title.includes('sanitize') || title.includes('disinfect') || title.includes('clean') || title.includes('surface')) {
+        return 'Eliminates harmful bacteria and viruses from surfaces.';
+      }
+      
+      // Personal hygiene items
+      if (title.includes('toothbrush') || title.includes('brush') || title.includes('dental') || title.includes('oral')) {
+        return 'Maintains oral hygiene and prevents bacterial infections.';
+      }
+      
+      // Laundry and clothing
+      if (title.includes('laundry') || title.includes('clothes') || title.includes('wash') || title.includes('garment')) {
+        return 'Removes contaminants and prevents skin infections.';
+      }
+      
+      // Storage and containers
+      if (title.includes('store') || title.includes('container') || title.includes('seal') || title.includes('cover')) {
+        return 'Protects items from contamination and maintains cleanliness.';
+      }
+      
+      // Emergency and urgent actions
+      if (title.includes('emergency') || title.includes('urgent') || title.includes('immediate') || title.includes('critical')) {
+        return 'Critical for immediate safety and preventing health risks.';
+      }
+      
+      // Pregnancy-specific actions
+      if (title.includes('pregnant') || title.includes('pregnancy') || title.includes('maternal') || title.includes('expecting')) {
+        return 'Protects both mother and developing baby from health risks.';
+      }
+      
+      // Infant and child-specific actions
+      if (title.includes('infant') || title.includes('baby') || title.includes('child') || title.includes('nappy') || title.includes('diaper')) {
+        return 'Essential for protecting your little one\'s developing immune system.';
+      }
+      
+      // Water treatment and filtration
+      if (title.includes('filter') || title.includes('treatment') || title.includes('chlorine') || title.includes('bleach')) {
+        return 'Removes harmful contaminants and makes water safe for consumption.';
+      }
+      
+      // Ventilation and air quality
+      if (title.includes('ventilate') || title.includes('air') || title.includes('breath') || title.includes('mold')) {
+        return 'Improves air quality and prevents respiratory issues.';
+      }
+      
+      // Personal protective equipment
+      if (title.includes('glove') || title.includes('mask') || title.includes('protective') || title.includes('ppe')) {
+        return 'Provides barrier protection against contaminants and infections.';
+      }
+      
+      // Default meaningful description
+      return 'Essential step to maintain health and safety during water emergencies.';
+    },
+    
+    openReference(url) {
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    },
+    
+    // Handle checkbox changes to ensure progress updates
+    onCheckboxChange(item) {
+      // Force reactivity update
+      this.$nextTick(() => {
+        this.$forceUpdate();
+      });
+      
+      // Optional: Add haptic feedback or sound
+      if (item.done) {
+        // Item completed
+        console.log('Item completed:', item.title);
+      } else {
+        // Item unchecked
+        console.log('Item unchecked:', item.title);
+      }
     }
   },
   
@@ -1435,61 +1442,69 @@ export default {
   position: relative;
 }
 
-.step-number {
+
+.step-circle {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #e9ecef;
-  color: #6c757d;
+  background: #CBD5E1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
   transition: all 0.3s ease;
-  border: 3px solid #e9ecef;
+  border: 3px solid #CBD5E1;
 }
 
-.step.active .step-number {
-  background: #007bff;
+.step-circle.active {
+  background: #2563EB;
+  border-color: #2563EB;
+}
+
+.step-circle.completed {
+  background: #10B981;
+  border-color: #10B981;
+}
+
+.step-number {
   color: white;
-  border-color: #007bff;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
-.step.completed .step-number {
-  background: #28a745;
-  color: white;
-  border-color: #28a745;
-}
-
-.step.completed .step-number::after {
-  content: "✓";
-  font-size: 1.5rem;
+.step-circle:not(.active):not(.completed) .step-number {
+  color: #64748B;
 }
 
 .step-label {
-  margin-top: 0.5rem;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: #6c757d;
+  font-weight: 600;
+  color: #1E293B;
   text-align: center;
+  max-width: 120px;
+  line-height: 1.3;
 }
 
 .step.active .step-label {
-  color: #007bff;
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.step.completed .step-label {
+  color: #10B981;
   font-weight: 600;
 }
 
 .step-line {
   width: 100px;
   height: 3px;
-  background: #e9ecef;
+  background: #CBD5E1;
   margin: 0 1rem;
   transition: all 0.3s ease;
 }
 
 .step-line.active {
-  background: #28a745;
+  background: #10B981;
 }
 
 /* Selection Cards */
@@ -1514,58 +1529,48 @@ export default {
   justify-content: space-between;
 }
 
+.mode-card::before, .place-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(13, 148, 136, 0.1), transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.mode-card:hover::before, .place-card:hover::before {
+  left: 100%;
+}
+
 .mode-card:hover, .place-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(13, 148, 136, 0.15);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(13, 148, 136, 0.25);
   border-color: var(--teal-600);
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+
+.mode-card:active, .place-card:active {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 15px 30px rgba(13, 148, 136, 0.3);
 }
 
 .mode-card.selected, .place-card.selected {
   border-color: var(--teal-600);
   background: linear-gradient(135deg, var(--teal-50) 0%, var(--cyan-50) 100%);
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(13, 148, 136, 0.25);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(13, 148, 136, 0.3);
+  border-width: 4px;
 }
 
-.card-icon {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-700) 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  margin: 0 auto 1.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 16px rgba(13, 148, 136, 0.3);
+.mode-card.selected:hover, .place-card.selected:hover {
+  transform: translateY(-12px) scale(1.05);
+  box-shadow: 0 30px 60px rgba(13, 148, 136, 0.4);
+  background: linear-gradient(135deg, var(--teal-100) 0%, var(--cyan-100) 100%);
 }
 
-.card-icon.general {
-  background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-700) 100%);
-}
-
-.card-icon.flood {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-  box-shadow: 0 8px 16px rgba(220, 53, 69, 0.3);
-}
-
-.card-icon.home {
-  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
-}
-
-.card-icon.safe {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-}
-
-.card-icon.rescue {
-  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
-}
-
-.card-icon.temporary {
-  background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
-}
 
 .card-content {
   flex: 1;
@@ -1579,6 +1584,17 @@ export default {
   color: var(--slate-900);
   font-weight: 700;
   font-size: 1.5rem;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.mode-card:hover h4, .place-card:hover h5 {
+  color: var(--teal-700);
+}
+
+.mode-card.selected h4, .place-card.selected h5 {
+  color: var(--teal-800);
 }
 
 .mode-card p, .place-card p {
@@ -1586,6 +1602,17 @@ export default {
   margin-bottom: 1.5rem;
   line-height: 1.6;
   font-size: 1rem;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.mode-card:hover p, .place-card:hover p {
+  color: var(--teal-600);
+}
+
+.mode-card.selected p, .place-card.selected p {
+  color: var(--teal-700);
 }
 
 .card-features {
@@ -1606,29 +1633,6 @@ export default {
   border: 1px solid rgba(13, 148, 136, 0.2);
 }
 
-.card-selection-indicator {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--teal-600);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s ease;
-}
-
-.mode-card.selected .card-selection-indicator,
-.place-card.selected .card-selection-indicator {
-  opacity: 1;
-  transform: scale(1);
-}
 
 /* Place Card Error State */
 .place-card.has-error {
@@ -1698,13 +1702,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   transition: all 0.3s ease;
+  border-radius: 50%;
 }
 
 .toast .btn-close:hover {
   background: #e9ecef;
   color: #333;
+  transform: scale(1.2);
+}
+
+.toast .btn-close:active {
+  background: #dee2e6;
+  transform: scale(0.9);
 }
 
 @keyframes slideInRight {
@@ -1795,30 +1805,52 @@ export default {
   display: flex;
   align-items: center;
   gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+.profile-card:hover::before {
+  left: 100%;
 }
 
 .profile-card:hover {
   border-color: #007bff;
-  transform: translateY(-2px);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+
+.profile-card:active {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
 .profile-card.active {
   border-color: #28a745;
   background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+  border-width: 3px;
 }
 
-.profile-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
+.profile-card.active:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
+  background: linear-gradient(135deg, #c3e6cb 0%, #a3d9a4 100%);
 }
+
 
 .profile-content {
   flex: 1;
@@ -1828,30 +1860,36 @@ export default {
   margin-bottom: 0.5rem;
   color: #333;
   font-weight: 600;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.profile-card:hover .profile-content h5 {
+  color: #007bff;
+}
+
+.profile-card.active .profile-content h5 {
+  color: #155724;
 }
 
 .profile-content p {
   margin-bottom: 0;
   color: #6c757d;
   font-size: 0.9rem;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-.profile-toggle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #e9ecef;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6c757d;
-  flex-shrink: 0;
+.profile-card:hover .profile-content p {
+  color: #0056b3;
 }
 
-.profile-card.active .profile-toggle {
-  background: #28a745;
-  color: white;
+.profile-card.active .profile-content p {
+  color: #0d4a1a;
 }
+
 
 /* Navigation */
 .navigation-section {
@@ -1875,6 +1913,7 @@ export default {
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .navigation-buttons .btn::before {
@@ -1884,7 +1923,7 @@ export default {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
   transition: left 0.5s;
 }
 
@@ -1894,32 +1933,89 @@ export default {
 
 .navigation-buttons .btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
   border-color: var(--teal-600);
+}
+
+.navigation-buttons .btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.navigation-buttons .btn-outline-primary {
+  background-color: transparent;
+  border-color: #007bff;
+  color: #007bff;
 }
 
 .navigation-buttons .btn-outline-primary:hover {
-  background-color: var(--teal-600);
-  border-color: var(--teal-600);
+  background-color: #007bff;
+  border-color: #007bff;
   color: white;
+  transform: translateY(-3px) scale(1.05);
+}
+
+.navigation-buttons .btn-outline-primary:active {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.navigation-buttons .btn-outline-secondary {
+  background-color: transparent;
+  border-color: #6c757d;
+  color: #6c757d;
 }
 
 .navigation-buttons .btn-outline-secondary:hover {
-  background-color: var(--slate-700);
-  border-color: var(--slate-700);
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+  transform: translateY(-3px) scale(1.05);
+}
+
+.navigation-buttons .btn-outline-secondary:active {
+  background-color: #495057;
+  border-color: #495057;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.navigation-buttons .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
   color: white;
 }
 
 .navigation-buttons .btn-primary:hover {
-  background-color: var(--teal-700);
-  border-color: var(--teal-700);
-  transform: translateY(-3px) scale(1.02);
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+}
+
+.navigation-buttons .btn-primary:active {
+  background-color: #004085;
+  border-color: #004085;
+  transform: translateY(-1px) scale(1.02);
+}
+
+.navigation-buttons .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
 }
 
 .navigation-buttons .btn-success:hover {
   background-color: #1e7e34;
   border-color: #1e7e34;
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.navigation-buttons .btn-success:active {
+  background-color: #155724;
+  border-color: #155724;
+  transform: translateY(-1px) scale(1.02);
 }
 
 /* Loading State */
@@ -1935,23 +2031,108 @@ export default {
 /* Results Section */
 .results-section {
   padding: 2rem 0;
+  background: #F9FAFB;
+  min-height: 100vh;
 }
 
 .results-header h2 {
   color: #28a745;
 }
 
-.checklist-container {
+/* Action Plan Container */
+.action-plan-container {
   background: white;
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  border: 1px solid #f8f9fa;
+  margin-bottom: 1.5rem;
 }
 
-.checklist-header {
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 1.5rem;
+.action-plan-header {
+  text-align: center;
   margin-bottom: 2rem;
+}
+
+.action-plan-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.action-plan-subtitle {
+  color: #6c757d;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+  border: 2px solid #007bff;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.progress-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #007bff;
+  line-height: 1;
+}
+
+.progress-label {
+  color: #6c757d;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.progress-percentage {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e9ecef;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #007bff 0%, #28a745 100%);
+  transition: width 0.3s ease;
+}
+
+.progress-message {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-style: italic;
 }
 
 /* Enhanced Checklist Cards */
@@ -2010,16 +2191,6 @@ export default {
   padding: 1rem 1.5rem 0.5rem;
 }
 
-.item-icon {
-  font-size: 2rem;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.05);
-  border-radius: 50%;
-}
 
 .item-priority-badge {
   padding: 0.25rem 0.75rem;
@@ -2062,18 +2233,6 @@ export default {
   margin-top: 0.25rem;
 }
 
-.item-checkbox input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 3px solid #dee2e6;
-  background: white;
-}
-
-.item-checkbox input[type="checkbox"]:checked {
-  background: #28a745;
-  border-color: #28a745;
-}
 
 .item-content {
   flex: 1;
@@ -2254,50 +2413,6 @@ export default {
 }
 
 /* Chat Bot Styles */
-.floating-chat-button {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 1000;
-}
-
-.chat-toggle-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--teal-600);
-  color: white;
-  border: none;
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.chat-toggle-btn:hover {
-  transform: scale(1.1);
-  background: var(--teal-700);
-}
-
-.chat-toggle-btn.active {
-  background: var(--coral-500);
-}
-
-.chat-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: var(--coral-500);
-  color: white;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.4rem;
-  border-radius: 10px;
-  font-weight: 600;
-}
 
 .chat-drawer {
   position: fixed;
@@ -2413,7 +2528,6 @@ export default {
   width: 6px;
   height: 6px;
   background: var(--teal-600);
-  border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out;
 }
 
@@ -2454,309 +2568,758 @@ export default {
 }
 
 .chat-input .btn {
-  border-radius: 50%;
   width: 40px;
   height: 40px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-/* Enhanced Checklist Cards */
-.checklist-card {
+.chat-input .btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+.chat-input .btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.6);
+}
+
+
+/* Checklist Header */
+.checklist-title-section h4 {
+  color: #333;
+  font-weight: 700;
+}
+
+.progress-container {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.progress-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.completion-percentage {
+  font-size: 1.1rem;
+}
+
+/* Section Headers */
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: #6c757d;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+
+/* Priority Actions Section */
+.priority-actions-section {
+  margin: 3rem 0;
+}
+
+.priority-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.priority-card {
   background: white;
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
-  transition: all 0.2s ease-in-out;
-  border: 1px solid var(--teal-100);
-  overflow: hidden;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 2px solid #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.priority-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.priority-card.urgency-critical {
+  border-color: #dc3545;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+}
+
+.priority-card.urgency-high {
+  border-color: #fd7e14;
+  background: linear-gradient(135deg, #fff8f0 0%, #ffe8d1 100%);
+}
+
+.priority-card.urgency-medium {
+  border-color: #ffc107;
+  background: linear-gradient(135deg, #fffdf0 0%, #fff8e1 100%);
+}
+
+.priority-card.urgency-low {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);
+}
+
+.priority-card.completed {
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+  border-color: #28a745;
+  opacity: 0.9;
+}
+
+.priority-card.completed .card-title {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.priority-card.completed .card-description {
+  color: #6c757d;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
-.checklist-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.checklist-card.completed {
-  background: linear-gradient(135deg, var(--teal-50) 0%, var(--cyan-50) 100%);
-  border-color: var(--teal-600);
-}
-
-.item-priority-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
+.priority-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
   font-weight: 600;
-  background: var(--teal-100);
-  color: var(--teal-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.item-priority-badge.urgent {
-  background: var(--coral-500);
+.priority-badge.urgency-critical {
+  background: #dc3545;
   color: white;
 }
 
-.item-priority-badge.high {
+.priority-badge.urgency-high {
   background: #fd7e14;
   color: white;
 }
 
-.item-priority-badge.medium {
+.priority-badge.urgency-medium {
   background: #ffc107;
   color: #212529;
 }
 
-.item-priority-badge.low {
+.priority-badge.urgency-low {
   background: #28a745;
   color: white;
 }
 
-/* Quick Actions */
-.quick-actions {
+.card-checkbox {
+  flex-shrink: 0;
+}
+
+.modern-checkbox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #dee2e6;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.modern-checkbox:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.modern-checkbox:checked {
+  background: #28a745;
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+}
+
+.modern-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.modern-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.modern-checkbox:checked:focus {
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.card-description {
+  color: #6c757d;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.learn-more-btn {
+  background: transparent;
+  border: 2px solid #007bff;
+  color: #007bff;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.learn-more-btn:hover {
+  background: #007bff;
+  color: white;
+}
+
+.source-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+.source-badge:hover {
+  background: rgba(0, 123, 255, 0.15);
+  color: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* Expand Section */
+.expand-section {
+  margin: 2rem 0;
+}
+
+.expand-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+  border: 2px solid #007bff;
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.expand-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+}
+
+.expand-content {
+  flex: 1;
+}
+
+.expand-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.expand-description {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.expand-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.expand-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.expand-btn:hover::before {
+  left: 100%;
+}
+
+.expand-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+}
+
+.expand-btn:active {
+  background: linear-gradient(135deg, #004085 0%, #003366 100%);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.6);
+}
+
+/* Complete Checklist */
+.complete-checklist {
+  margin-top: 2rem;
+}
+
+/* Category Sections */
+.category-section {
   background: white;
   border-radius: 20px;
   padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #f8f9fa;
+  margin-bottom: 2rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.category-icon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+  border-radius: 15px;
+  border: 2px solid #007bff;
+}
+
+.category-details {
+  flex: 1;
+}
+
+.category-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.category-description {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.category-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-count {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.progress-percentage {
+  color: #28a745;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.category-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.action-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.action-card.completed {
+  background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);
+  border-color: #28a745;
+  opacity: 0.9;
+}
+
+.action-card.completed .card-title {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.action-card.completed .card-description {
+  color: #6c757d;
+}
+
+/* Complete Checklist */
+.complete-header h5 {
+  color: #333;
+  font-weight: 700;
+}
+
+/* Category Sections */
+.category-section {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.category-info {
+  flex: 1;
+}
+
+.category-title {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.category-description {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+.category-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.category-progress .progress {
+  width: 120px;
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+}
+
+.category-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Quick Actions Panel */
+.quick-actions-panel {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #f8f9fa;
   height: fit-content;
   position: sticky;
   top: 2rem;
 }
 
-.action-buttons .btn {
-  border-radius: 15px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
+.panel-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f8f9fa;
 }
 
-.action-buttons .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+.panel-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
 }
 
-.micro-flows {
-  border-top: 2px solid #e9ecef;
-  padding-top: 1.5rem;
-}
-
-.micro-flow-card {
-  background: #f8f9fa;
-  border-radius: 15px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.micro-flow-card:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.micro-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.micro-content h6 {
-  margin-bottom: 0.25rem;
-  color: #333;
-  font-weight: 600;
-}
-
-.micro-content p {
-  margin-bottom: 0;
+.panel-subtitle {
   color: #6c757d;
-  font-size: 0.8rem;
-}
-
-/* Micro-Flow Modals */
-.micro-flow-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1050;
-  padding: 1rem;
-}
-
-.micro-flow-modal {
-  background: white;
-  border-radius: 20px;
-  max-width: 500px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-.modal-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 2px solid #e9ecef;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.modal-header h5 {
+  font-size: 1rem;
   margin-bottom: 0;
-  color: #333;
-  font-weight: 600;
 }
 
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #6c757d;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.btn-close:hover {
-  background: #e9ecef;
-  color: #333;
-}
-
-.modal-body {
-  padding: 2rem;
-}
-
-/* Timer Circle */
-.timer-circle {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: conic-gradient(#28a745 0deg, #e9ecef 0deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 2rem;
-  position: relative;
-}
-
-.timer-progress {
-  --progress: 0;
-  background: conic-gradient(#28a745 0deg calc(var(--progress) * 3.6deg), #e9ecef calc(var(--progress) * 3.6deg) 360deg);
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.timer-text {
-  background: white;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
+.action-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.timer-seconds {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #333;
-  line-height: 1;
-}
-
-.timer-label {
-  font-size: 0.9rem;
-  color: #6c757d;
-  font-weight: 500;
-}
-
-.timer-controls .btn {
-  border-radius: 15px;
-  padding: 0.75rem 2rem;
-  font-weight: 500;
-}
-
-.timer-instructions {
-  background: #f8f9fa;
-  border-radius: 15px;
-  padding: 1rem;
-}
-
-/* Calculator Form */
-.calculator-form .form-control {
-  border-radius: 15px;
-  border: 2px solid #e9ecef;
-  padding: 0.75rem 1rem;
-  transition: all 0.3s ease;
-}
-
-.calculator-form .form-control:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
-}
-
-.result-card {
-  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-  border-radius: 15px;
-  padding: 1.5rem;
+.action-button {
   display: flex;
   align-items: center;
   gap: 1rem;
-  border: 2px solid #28a745;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
 
-.result-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #28a745;
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
-.result-content h6 {
+.action-button.primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+}
+
+.action-button.primary:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.6);
+  background: linear-gradient(135deg, #004085 0%, #003366 100%);
+}
+
+.action-button.secondary {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.action-button.secondary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+}
+
+.action-button.secondary:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.6);
+  background: linear-gradient(135deg, #155724 0%, #0d4a1a 100%);
+}
+
+.action-button.tertiary {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.action-button.tertiary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+}
+
+.action-button.tertiary:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.6);
+  background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+}
+
+.action-button i {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Progress Summary */
+.progress-summary {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+  border: 2px solid #007bff;
+  border-radius: 15px;
+  padding: 1.5rem;
+}
+
+.summary-title {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #007bff;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.summary-progress {
+  text-align: center;
+}
+
+.summary-progress .progress-bar-container {
+  width: 100%;
+  height: 10px;
+  background: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
   margin-bottom: 0.5rem;
-  color: #155724;
+}
+
+.summary-progress .progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #007bff 0%, #28a745 100%);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #2c3e50;
+  font-size: 1rem;
   font-weight: 600;
 }
 
-.result-content p {
-  margin-bottom: 0.25rem;
-  color: #155724;
-}
 
-.result-content small {
-  color: #6c757d;
-}
+
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
