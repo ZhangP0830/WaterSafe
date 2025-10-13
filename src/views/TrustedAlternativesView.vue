@@ -439,8 +439,7 @@ const addressResults = ref([]);
 const selectedAddress = ref(null);
 
 // API base URL - Auto-detect environment
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 
-  (import.meta.env.DEV ? 'http://localhost:8000' : '/api');
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:8000/api' : '/api';
 
 // Get all water source data
 const fetchWaterSources = async () => {
@@ -448,11 +447,7 @@ const fetchWaterSources = async () => {
   error.value = null;
   
   try {
-    // Use this for deployment
     const response = await fetch(`${API_BASE_URL}/water-sources/with-coordinates?limit=1000`);
-    
-    // Use this for local development
-    // const response = await fetch(`http://localhost:8000/api/water-sources/with-coordinates?limit=1000`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
