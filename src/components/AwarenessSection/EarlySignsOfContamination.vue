@@ -103,11 +103,11 @@ const completeAll = () => {
         >
           <div class="form-check me-3 mt-1">
             <input 
-              class="form-check-input" 
+              class="modern-checkbox" 
               type="checkbox" 
-              :id="'advisory-lifted-task-' + task.id"
+              :id="'early-signs-task-' + task.id"
               :checked="task.completed"
-              @click.stop
+              @click.stop="toggleTask(task.id)"
             >
           </div>
           <div class="flex-grow-1">
@@ -169,9 +169,52 @@ const completeAll = () => {
   opacity: 0.7;
 }
 
-.form-check-input:checked {
-  background-color: #198754;
-  border-color: #198754;
+.modern-checkbox {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #dee2e6;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.modern-checkbox:hover {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.modern-checkbox:checked {
+  background: #28a745;
+  border-color: #28a745;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+}
+
+.modern-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.modern-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.modern-checkbox:checked:focus {
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
 }
 
 .badge {
