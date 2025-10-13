@@ -5,42 +5,41 @@
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?style=for-the-badge&logo=mysql)](https://mysql.com/)
 
-> A comprehensive water safety awareness and trusted alternatives finder application designed to help communities access safe water sources and receive personalized guidance during water quality issues.
 
-## 🎯 Overview
+## Overview
 
 WaterSafe is a comprehensive water safety platform that protects families from water contamination risks. The application provides personalized guidance for hydration, nutrition, hygiene, and health monitoring during water safety disruptions, with special focus on pregnant women and infants.
 
 ### 🌟 Key Features
 
-- **🛡️ Maternal & Infant Health Shield**: Comprehensive protection combining hydration, nutrition, hygiene, and health support
-- **💧 Hydration Safety Hub**: Daily safe water intake guidance tailored for pregnancy and infant formula preparation
-- **🍼 Feeding & Tracking**: Mother's hydration tracker and infant feeding/hydration schedule with offline capabilities
-- **🔍 Symptom Checker**: AI-powered tool to guide mothers when noticing early symptoms in themselves or their infant
-- **🧼 Sanitation Support**: Practical checklists for handwashing, safe surfaces, and waste handling during disruptions
-- **🚨 Emergency First-Response**: Immediate "what to do" cards for contamination, illness, or dehydration situations
-- **📊 Water Quality Prediction**: AI-powered predictions for water quality parameters using machine learning models
-- **🗺️ Trusted Alternatives**: Interactive map showing nearby safe water sources with status updates
-- **📱 Responsive Design**: Modern, mobile-first interface built with Vue.js and Material Design
+- **Maternal & Infant Health Shield**: Comprehensive protection combining hydration, nutrition, hygiene, and health support
+- **Hydration Safety Hub**: Daily safe water intake guidance tailored for pregnancy and infant formula preparation
+- **Feeding & Tracking**: Mother's hydration tracker and infant feeding/hydration schedule with offline capabilities
+- **Symptom Checker**: AI-powered tool to guide mothers when noticing early symptoms in themselves or their infant
+- **Sanitation Support**: Practical checklists for handwashing, safe surfaces, and waste handling during disruptions
+- **Emergency First-Response**: Immediate "what to do" cards for contamination, illness, or dehydration situations
+- **Water Quality Prediction**: AI-powered predictions for water quality parameters using machine learning models
+- **Trusted Alternatives**: Interactive map showing nearby safe water sources with status updates
+- **Responsive Design**: Modern, mobile-first interface built with Vue.js and Material Design
 
 ## 🏗️ Architecture
 
 ```
 WaterSafe/
 ├── 📁 Frontend (Vue.js 3)
-│   ├── 🎨 Material Design Components
-│   ├── 🗺️ Interactive Maps (Google Maps)
-│   ├── 📱 Responsive UI/UX
-│   └── 🔄 Real-time Data Integration
+│   ├── Material Design Components
+│   ├── Interactive Maps (Google Maps)
+│   ├── Responsive UI/UX
+│   └── Real-time Data Integration
 ├── 📁 Backend (FastAPI)
-│   ├── 🚀 RESTful API Endpoints
-│   ├── 🤖 AI/ML Integration
-│   ├── 🗄️ Database Management
-│   └── 📊 Water Quality Prediction Models
+│   ├── RESTful API Endpoints
+│   ├── AI/ML Integration
+│   ├── Database Management
+│   └── Water Quality Prediction Models
 └── 📁 Data & Models
-    ├── 📈 Historical Water Quality Data
-    ├── 🧠 Trained ML Models
-    └── 📍 Geographic Data
+    ├── Historical Water Quality Data
+    ├── Trained ML Models
+    └── Geographic Data
 ```
 
 ## 🚀 Quick Start
