@@ -24,6 +24,11 @@ const store = useMaternalInfantStore();
 const setActiveSection = (section) => {
   activeSection.value = section;
   isMenuOpen.value = false;
+  
+  // Scroll to the section after a brief delay to ensure DOM update
+  setTimeout(() => {
+    scrollToSection(section);
+  }, 100);
 };
 
 const scrollToSection = (sectionId) => {
