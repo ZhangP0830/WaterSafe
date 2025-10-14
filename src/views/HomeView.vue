@@ -72,7 +72,7 @@ onUnmounted(() => {
             <div class="col-lg-8 col-xl-6 text-center">
                 <div class="hero-text-block">
                   <h1 class="hero-title">
-                    WaterSafe
+                    Water Safety Guard
                   </h1>
                   <p class="hero-subtitle">
                     Protecting Families from Water Contamination Risks
