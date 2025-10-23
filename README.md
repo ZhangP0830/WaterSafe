@@ -1,5 +1,4 @@
-# WaterSafe 
-
+# Water Safety Guard
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-water--safety.netlify.app-blue?style=for-the-badge&logo=netlify)](https://water-safety-guard.netlify.app/)
 [![Frontend](https://img.shields.io/badge/Frontend-Vue.js%203-4FC08D?style=for-the-badge&logo=vue.js)](https://vuejs.org/)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -8,7 +7,7 @@
 
 ## Overview
 
-WaterSafe is a comprehensive water safety platform that protects families from water contamination risks. The application provides personalized guidance for hydration, nutrition, hygiene, and health monitoring during water safety disruptions, with special focus on pregnant women and infants.
+Water Safety Guard is a comprehensive water safety platform that protects families from water contamination risks. The application provides personalized guidance for hydration, nutrition, hygiene, and health monitoring during water safety disruptions, with special focus on pregnant women and infants.
 
 ### 🌟 Key Features
 
